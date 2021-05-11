@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import loginService from '../../services/login';
 import LoginForm from '../../components/Login';
 import SessionContext from './../../context/SessionContext';
-import Home from './../Home'
+import Home from './../Home';
 
 import './Auth.css';
 

@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {Link} from 'wouter';
+import {Link, useLocation} from 'wouter';
 import SessionContext from './../context/SessionContext';
 
 // material-ui
@@ -11,10 +11,12 @@ import Box from '@material-ui/core/Box';
 
 const Header = () => {
     const {session, setSession} = useContext(SessionContext);
+    const [location, setLocation] = useLocation();
 
     const doLogout = () => {
         window.localStorage.removeItem('loggedAutoCvAppUser');
         setSession(null);
+        if (location === '/home') setLocation('/');
     }
 
     return (

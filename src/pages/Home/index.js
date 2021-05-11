@@ -3,7 +3,7 @@ import {useLocation} from 'wouter';
 import './Home.css';
 
 export default function Home() {
-    const [location, setLocation] = useLocation();
+    const setLocation = useLocation()[1];
     useEffect( () => {
         setLocation('/home');
     });

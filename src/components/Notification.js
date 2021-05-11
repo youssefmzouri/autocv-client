@@ -1,13 +1,25 @@
 import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Alert from '@material-ui/lab/Alert';
 
-const Notification = ({ message }) => {
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+    '& > * + *': {
+      marginTop: theme.spacing(2),
+    },
+  },
+}));
+
+const Notification = ({ message, severity = 'info' }) => {
+  const classes = useStyles();
   if (message === null) {
     return null;
   }
 
   return (
-    <div className="error">
-      {message}
+    <div className={classes.root}>
+      <Alert severity={severity}>{message}</Alert>
     </div>
   )
 }
