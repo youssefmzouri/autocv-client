@@ -17,7 +17,8 @@ export default function App() {
       <SessionContextProvider>
         <Header/>
         <Route path="/" component={Welcome} />
-        <Route path="/auth" component={Auth} />
+        <Route path="/login" component={Auth} />
+        <Route path="/register" component={Auth} />
         <Route path="/home" component={Home} />
       </SessionContextProvider>
     </div>

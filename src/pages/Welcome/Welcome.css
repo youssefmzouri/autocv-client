@@ -1,0 +1,15 @@
+.welcomeContainer {
+    /* padding: 5px; */
+    width: 100%;
+    overflow: hidden;
+}
+
+.title {
+    /* text-align: left; */
+}
+
+img {
+    width: 96.5%;
+    height: auto;
+    margin: 0 auto;
+}

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import Notification from '../components/Notification';
+import Notification from './Notification';
 
 // material-ui
 
@@ -7,8 +7,6 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
@@ -42,10 +40,10 @@ const useStyles = makeStyles((theme) => ({
     },
     submit: {
       margin: theme.spacing(3, 0, 2),
-    },
+    }
 }));
 
-const Login = ({doLogin, handleUserSession}) => {
+const LoginForm = ({doLogin, handleUserSession}) => {
     const [userEmail, setUserEmail] = useState('');
     const [userPassword, setUserPassword] = useState('');
     const [notificationMessage, setNotificationMessage] = useState({
@@ -118,18 +116,18 @@ const Login = ({doLogin, handleUserSession}) => {
                         placeholder="User password"
                     />
                     <Button
+                        className={classes.submit}
                         type="submit"
                         fullWidth
                         variant="contained"
                         color="primary"
-                        className={classes.submit}
                     >
                         Log in
                     </Button>
-                    <Grid container>
-                        <Grid item xs>
-                            <Link href="#" variant="body2">
-                                {"Don't have an account? Create an account"}
+                    <Grid container justify="flex-end">
+                        <Grid item>
+                            <Link href="/register" variant="body2">
+                                Don't have an account? Create an account
                             </Link>
                         </Grid>
                     </Grid>
@@ -142,4 +140,4 @@ const Login = ({doLogin, handleUserSession}) => {
     );
 }
 
-export default Login;
+export default LoginForm;

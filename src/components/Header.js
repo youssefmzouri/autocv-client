@@ -12,6 +12,7 @@ import Box from '@material-ui/core/Box';
 const Header = () => {
     const {session, setSession} = useContext(SessionContext);
     const [location, setLocation] = useLocation();
+    const linkToHome = session === null ? '/' : '/home';
 
     const doLogout = () => {
         window.localStorage.removeItem('loggedAutoCvAppUser');
@@ -24,16 +25,18 @@ const Header = () => {
             <AppBar position="static">
                 <Toolbar display="flex" p={1}>
                     <Box flexGrow={1} textAlign="left" p={1}>
-                        <Link to="/">
-                            <Typography variant="h4" >AutoCV</Typography>
+                        <Link to={linkToHome}>
+                            <Typography variant="h4" className="headerCompanyName" >AutoCV</Typography>
                         </Link>
                     </Box>
                     {session === null
                         ?   <Box p={1}>
-                                <Link to="/auth">
+                                <Link to="/login">
                                     <Button color="inherit">Login</Button>
                                 </Link>
-                                <Button color="inherit">Register</Button>
+                                <Link to="/register">
+                                    <Button color="inherit">Register</Button>
+                                </Link>
                             </Box>
                         :   <Box p={1}>
                                 <Button onClick={doLogout} color="inherit">Logout</Button>

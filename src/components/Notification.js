@@ -19,7 +19,7 @@ const Notification = ({ message, severity = 'info' }) => {
 
   return (
     <div className={classes.root}>
-      <Alert severity={severity}>{message}</Alert>
+      <Alert variant="outlined" severity={severity}>{message}</Alert>
     </div>
   )
 }
