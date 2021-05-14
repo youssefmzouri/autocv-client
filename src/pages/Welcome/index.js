@@ -55,7 +55,7 @@ export default function Welcome() {
                     </div>
                 </Grid>
                 <Grid item xs={12} md={6} sm={12}>
-                    <img maxWidth="100%" width="auto" src="http://localhost:5000/images/wp_cv.jpg" alt=""/>
+                    <img style={{maxWidth: "100%"}} width="auto" src="http://localhost:5000/images/wp_cv.jpg" alt=""/>
                     <Typography variant="h6" align="left" >
                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus molestiae dicta cumque unde corrupti deserunt dignissimos cupiditate. Nihil in placeat corrupti earum cumque debitis fugit iure. Enim hic quaerat illum.
                     </Typography>

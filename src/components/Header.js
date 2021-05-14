@@ -17,7 +17,7 @@ const Header = () => {
     const doLogout = () => {
         window.localStorage.removeItem('loggedAutoCvAppUser');
         setSession(null);
-        if (location === '/home') setLocation('/');
+        setLocation('/');
     }
 
     return (
