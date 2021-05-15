@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-// import {useLocation} from 'wouter';
 import SessionContext from './../../context/SessionContext';
 import './Home.css';
 

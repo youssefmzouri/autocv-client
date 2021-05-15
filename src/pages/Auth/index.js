@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {useLocation} from 'wouter';
+import {useLocation, Redirect} from 'wouter';
 import loginService from '../../services/login';
 import LoginForm from '../../components/LoginForm';
 import RegisterForm from '../../components/RegisterForm';
@@ -9,27 +9,27 @@ import './Auth.css';
 
 export default function Auth() {
     const {session, setSession} = useContext(SessionContext);
-    const [location, setLocation] = useLocation();
-
-    // const goHome = () => {
-    //     setLocation('/home');
-    // }
+    const location = useLocation()[0];
 
     return (
-        <div className='authContainer'>
-            <>
-                {
-                    location === '/register'
-                ?
-                    <RegisterForm
-                        doRegisterAndLogin={loginService.register}
-                        handleUserSession={setSession}/>
-                :
-                    <LoginForm
-                        doLogin={loginService.login}
-                        handleUserSession={setSession}/>
-                }
-            </>
-        </div>
+        <>
+            {!session ?
+                <div className='authContainer'>
+                    {
+                        location === '/register'
+                    ?
+                        <RegisterForm
+                            doRegisterAndLogin={loginService.register}
+                            handleUserSession={setSession}/>
+                    :
+                        <LoginForm
+                            doLogin={loginService.login}
+                            handleUserSession={setSession}/>
+                    }
+                </div>
+            :
+                <Redirect to="/home" />
+            }
+        </>
     )
 }

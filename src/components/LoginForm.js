@@ -18,7 +18,7 @@ import Container from '@material-ui/core/Container';
 function Copyright() {
     return (
       <Typography variant="body2" color="textSecondary" align="center">
-        {'Copyright © '} AutoVC{' '} {new Date().getFullYear()}
+        {'Copyright © '} AutoCV{' '} {new Date().getFullYear()}
       </Typography>
     );
 }

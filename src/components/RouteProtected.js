@@ -1,20 +1,13 @@
 import React, {useContext} from 'react';
-import {Route} from 'wouter';
+import {Route, Redirect} from 'wouter';
 import SessionContext from '../context/SessionContext';
-import Auth from '../pages/Auth';
 
-const RouteProtected = ({path, component}) => {
+const RouteProtected = props => {
     const {session} = useContext(SessionContext);
-    return (
-        <>
-            {
-                session ?
-                    <Route path={path} component={component} />
-                : 
-                    <Route path={"/auth"} component={Auth} />
-            }
-        </>        
-    )
-}
+    if( session === null ) {
+        return <Redirect to="/login"/>;
+    }
+    return <Route {...props} />;
+};
 
 export default RouteProtected;

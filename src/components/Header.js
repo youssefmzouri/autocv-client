@@ -11,7 +11,7 @@ import Box from '@material-ui/core/Box';
 
 const Header = () => {
     const {session, setSession} = useContext(SessionContext);
-    const [location, setLocation] = useLocation();
+    const setLocation = useLocation()[1];
     const linkToHome = session === null ? '/' : '/home';
 
     const doLogout = () => {
@@ -42,7 +42,6 @@ const Header = () => {
                                 <Button onClick={doLogout} color="inherit">Logout</Button>
                             </Box>
                     }
-                    
                 </Toolbar>
             </AppBar>
         </div>

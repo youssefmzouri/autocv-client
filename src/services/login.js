@@ -32,4 +32,9 @@ const register = async (credentials) => {
     }
 }
 
-export default {login, register};
+const toExport = {
+    login,
+    register
+};
+
+export default toExport;
