@@ -4,17 +4,19 @@ import loginService from '../../services/login';
 import LoginForm from '../../components/LoginForm';
 import RegisterForm from '../../components/RegisterForm';
 import SessionContext from './../../context/SessionContext';
+import HeaderOutSession from '../../components/HeaderOutSession';
 
 import './Auth.css';
 
 export default function Auth() {
     const {session, setSession} = useContext(SessionContext);
-    const location = useLocation()[0];
+    const [location] = useLocation();
 
     return (
-        <>
+        <div className='authContainer'>
             {!session ?
-                <div className='authContainer'>
+                <>
+                    <HeaderOutSession />
                     {
                         location === '/register'
                     ?
@@ -26,10 +28,10 @@ export default function Auth() {
                             doLogin={loginService.login}
                             handleUserSession={setSession}/>
                     }
-                </div>
+                </>
             :
                 <Redirect to="/home" />
             }
-        </>
+        </div>
     )
 }
