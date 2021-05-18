@@ -8,7 +8,7 @@ import Auth from './pages/Auth';
 import {SessionContextProvider} from './context/SessionContext';
 import Welcome from './pages/Welcome';
 import MyProfile from './pages/MyProfile';
-
+import Curriculums from './pages/Curriculums';
 
 export default function App() {
   return (
@@ -21,6 +21,13 @@ export default function App() {
           <Route path="/register" component={Auth} />
           <RouteProtected path="/profile" component={MyProfile} />
           <RouteProtected path="/home" component={Home} />
+          <RouteProtected path="/curriculums" component={Curriculums} />
+          <RouteProtected path="/projects" component={Home} />
+          <RouteProtected path="/laboralExperience" component={Home} />
+          <RouteProtected path="/academicExperience" component={Home} />
+          <RouteProtected path="/templates" component={Home} />
+          <RouteProtected path="/personalInfo" component={Home} />
+          <RouteProtected path="/profilePhotos" component={Home} />
           <Route><h1>404 - Not found!</h1></Route>
         </Switch>
       </SessionContextProvider>

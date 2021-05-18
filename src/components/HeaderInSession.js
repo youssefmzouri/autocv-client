@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
+import {useLocation, Link} from 'wouter';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -17,6 +18,7 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 
 import {mainListItems} from './ListItemsMenu';
+import SessionContext from '../context/SessionContext';
 
 const drawerWidth = 240;
 
@@ -56,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'none',
   },
   title: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   drawerPaper: {
     position: 'relative',
@@ -86,6 +88,8 @@ const HeaderInSession = ({children}) => {
     const [open, setOpen] = useState(false);
     const [userMenu, setUserMenu] = useState(null);
     const openUserMenu = Boolean(userMenu);
+    const {session, setSession} = useContext(SessionContext);
+    const [location , setLocation] = useLocation();
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -99,6 +103,16 @@ const HeaderInSession = ({children}) => {
     const handleCloseUserMenu = () => {
         setUserMenu(null);
     };
+    const handleGoToProfile = () => {
+      setUserMenu(null);
+      setLocation('/profile');
+    }
+    const handleLogOut = () => {
+      setUserMenu(null);
+      window.localStorage.removeItem('loggedAutoCvAppUser');
+      setSession(null);
+      setLocation('/');
+    }
     
     return (
         <div className={classes.root}>
@@ -114,10 +128,16 @@ const HeaderInSession = ({children}) => {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography component="h1" variant="h4" color="inherit" noWrap className={classes.title}>
-                        AutoCV
-                    </Typography>
-                    <IconButton color="inherit" aria-controls="fade-menu" aria-haspopup="true" onClick={handleClickUserMenu}>
+                    <Link to="/home">
+                      <Typography component="h1" variant="h4" color="inherit" noWrap className={classes.title}>
+                          AutoCV
+                      </Typography>
+                    </Link>
+                    <IconButton 
+                        color="inherit"
+                        aria-controls="fade-menu"
+                        aria-haspopup="true"
+                        onClick={handleClickUserMenu}>
                         <AccountCircleIcon />
                     </IconButton>
                     <Menu
@@ -128,8 +148,8 @@ const HeaderInSession = ({children}) => {
                         onClose={handleCloseUserMenu}
                         TransitionComponent={Fade}
                     >
-                        <MenuItem onClick={handleCloseUserMenu}>Profile</MenuItem>
-                        <MenuItem onClick={handleCloseUserMenu}>Logout</MenuItem>
+                        <MenuItem onClick={handleGoToProfile}>My profile</MenuItem>
+                        <MenuItem onClick={handleLogOut}>Logout</MenuItem>
                     </Menu>
                 </Toolbar>
             </AppBar>

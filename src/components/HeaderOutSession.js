@@ -9,12 +9,6 @@ import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 
 const HeaderOutSession = () => {
-    // const doLogout = () => {
-    //     window.localStorage.removeItem('loggedAutoCvAppUser');
-    //     setSession(null);
-    //     setLocation('/');
-    // }
-
     return (
         <div className="headerOutSessionContainer">
             <AppBar position="static">
