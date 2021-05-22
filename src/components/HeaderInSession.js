@@ -88,8 +88,8 @@ const HeaderInSession = ({children}) => {
     const [open, setOpen] = useState(false);
     const [userMenu, setUserMenu] = useState(null);
     const openUserMenu = Boolean(userMenu);
-    const {session, setSession} = useContext(SessionContext);
-    const [location , setLocation] = useLocation();
+    const {setSession} = useContext(SessionContext);
+    const [,setLocation] = useLocation();
 
     const handleDrawerOpen = () => {
         setOpen(true);

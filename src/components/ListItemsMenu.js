@@ -11,11 +11,6 @@ import SchoolIcon from '@material-ui/icons/School';
 import WorkIcon from '@material-ui/icons/Work';
 import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 
-const handleClickItem = (e) => {
-    const {innerText} = e.target;
-    console.log('click en: ', e);
-}
-
 const mainListItems = (
     <>
         <Link to="curriculums">
@@ -35,7 +30,7 @@ const mainListItems = (
             </ListItem>
         </Link>
         <Link to="laboralExperience">
-            <ListItem button onClick={handleClickItem}>
+            <ListItem button>
                 <ListItemIcon>
                     <WorkIcon />
                 </ListItemIcon>

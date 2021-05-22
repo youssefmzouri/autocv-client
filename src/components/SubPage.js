@@ -33,14 +33,11 @@ const useStyles = makeStyles((theme) => ({
       overflow: 'auto',
       flexDirection: 'column',
     },
-    fixedHeight: {
-      height: 240,
-    },
 }));
 
 const SubPage = ({children}) => {
     const classes = useStyles();
-    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+    const fixedHeightPaper = clsx(classes.paper);
 
     return (
         <div className="subPageContainer">

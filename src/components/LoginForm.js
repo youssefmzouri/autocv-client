@@ -60,6 +60,8 @@ const LoginForm = ({doLogin, handleUserSession}) => {
                 password: userPassword
             });
 
+            user.Authorization = `Bearer ${user.token}`;
+
             window.localStorage.setItem (
                 'loggedAutoCvAppUser',
                 JSON.stringify(user)
