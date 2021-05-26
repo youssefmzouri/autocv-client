@@ -12,8 +12,19 @@ const getUserCurriculums = async (headers) => {
     }
 }
 
+const postUserCurriculums = async (headers, data) => {
+    try {
+        const response = await axios.post(baseUrl+'/api/curriculums', data, {headers});
+        return response.data;
+    } catch(e) {
+        console.log('Error creating one curriculum: ', e);
+        throw e;
+    }
+}
+
 const toExport = {
-    getUserCurriculums
+    getUserCurriculums,
+    postUserCurriculums
 };
 
 export default toExport;
