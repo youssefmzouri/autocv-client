@@ -4,9 +4,10 @@ import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    margin: '0 8px 0 8px',
     width: '100%',
     '& > * + *': {
-      marginTop: theme.spacing(2),
+      margin: theme.spacing(1),
     },
   },
 }));

@@ -7,7 +7,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
+import {Link} from 'wouter';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -59,6 +59,8 @@ const LoginForm = ({doLogin, handleUserSession}) => {
                 email: userEmail,
                 password: userPassword
             });
+
+            user.Authorization = `Bearer ${user.token}`;
 
             window.localStorage.setItem (
                 'loggedAutoCvAppUser',
@@ -126,7 +128,7 @@ const LoginForm = ({doLogin, handleUserSession}) => {
                     </Button>
                     <Grid container justify="flex-end">
                         <Grid item>
-                            <Link href="/register" variant="body2">
+                            <Link to="/register">
                                 Don't have an account? Create an account
                             </Link>
                         </Grid>
