@@ -1,19 +1,30 @@
 import axios from 'axios';
 
-const baseUrl = 'http://localhost:5000';
+const baseUrl = process.env.REACT_APP_SERVER_URL;
 
-const onBoarding = async (headers) => {
+const getAccessToken = async (headers, data) => {
+    try {
+        const response = await axios.post(baseUrl+'/api/github/authenticate', data, {headers});
+        return JSON.parse(response.data.body);
+    } catch (e) {
+        console.log('Error getting access token: ', e);
+        throw e;
+    }
+}
+
+const getUserRepos = async (headers) => {
     try {
         // const response = await axios.get(baseUrl+'/api/curriculums', {headers});
         // return response.data;
     } catch (e) {
-        console.log('Error with login: ', e);
+        console.log('Error getting user repos: ', e);
         throw e;
     }
 }
 
 const toExport = {
-    onBoarding,
+    getAccessToken,
+    getUserRepos
 };
 
 export default toExport;

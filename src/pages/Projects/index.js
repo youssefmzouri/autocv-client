@@ -1,15 +1,14 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import SubPage from '../../components/SubPage';
 import SessionContext from './../../context/SessionContext';
 import { makeStyles } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import GitHubIcon from '@material-ui/icons/GitHub';
-import {Link, Redirect} from 'wouter';
 
+import useGithubRepositories from '../../hooks/useGithubRepositories';
 
-const client_id = '...';
-const urlGithub = `https://github.com/login/oauth/authorize?client_id=${client_id}&scope=repo,user`;
+const urlGithub = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_GITHUB_REDIRECT_URI}&scope=repo,user`;
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -21,14 +20,17 @@ const useStyles = makeStyles((theme) => ({
     },
     alert: {
         alignItems: 'center',
+    },
+    anchor: {
+        textDecoration: 'none'
     }
 }));
 
 export default function Projects() {
     const classes = useStyles();
-    const {session} = useContext(SessionContext);
-    const {tokenGithub, setTokenGithub} = useState('');
-    const [data, setData] = useState({ errorMessage: "", isLoading: false });
+    const {session, setSession} = useContext(SessionContext);
+    const {repos} = useGithubRepositories({session, setSession});
+    const tokenGithub = session.tokenGithub || '';
     
     return (
         <div className="projectsContainer">
@@ -39,7 +41,13 @@ export default function Projects() {
                         className={classes.alert}
                         icon={<GitHubIcon fontSize="large" />}
                         severity={tokenGithub ? 'success' : 'error'}
-                        action={<Link to={urlGithub}><Button color="inherit" size="large">SYNC</Button></Link>}
+                        action={
+                            <a  className={classes.anchor}
+                                href={urlGithub}
+                            >
+                                <Button color="inherit" size="large">SYNC</Button>
+                            </a>
+                        }
                     >
                             {tokenGithub ? 'Synchronization with Githun performed successfully.' : 'Synchronization with Githun pending'}
                     </Alert>
