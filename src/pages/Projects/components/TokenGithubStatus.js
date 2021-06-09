@@ -10,7 +10,7 @@ const urlGithub = `https://github.com/login/oauth/authorize?client_id=${process.
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        margin: '0 8px 0 8px',
+        margin: '0',
         width: '100%',
         '& > * + *': {
             margin: theme.spacing(1),
@@ -53,7 +53,7 @@ export default function TokenGithubStatus() {
                                 </a>
                         }
                     >
-                            {tokenGithub ? 'Synchronization with Github performed successfully.' : 'Synchronization with Github pending'}
+                        {tokenGithub ? 'Synchronization with Github performed successfully.' : 'Synchronization with Github pending'}
                     </Alert>
             }
         </div>
