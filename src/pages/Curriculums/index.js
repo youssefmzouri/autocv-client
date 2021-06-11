@@ -13,7 +13,7 @@ export default function Curriculums() {
             <SubPage>
                 <h2>Curriculums page</h2>
                 {loading
-                    ? 'Cargando ...'
+                    ? 'Loading ...'
                     : <TableCurriculums
                         curriculums={curriculums}
                     />

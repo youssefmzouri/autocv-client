@@ -1,9 +1,7 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
-import SessionContext from './../../../context/SessionContext';
 import GitHubIcon from '@material-ui/icons/GitHub';
-import useGithubAccessToken from '../../../hooks/useGithubAccessToken';
 import { makeStyles } from '@material-ui/core/styles';
 
 const urlGithub = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_GITHUB_REDIRECT_URI}&scope=repo,user`;
@@ -24,10 +22,8 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function TokenGithubStatus() {
+export default function TokenGithubStatus({isLoading, tokenGithub}) {
     const classes = useStyles();
-    const {session, setSession} = useContext(SessionContext);
-    const {isLoading, tokenGithub} =  useGithubAccessToken({session, setSession});
     return (
         <div className={classes.root}>
             {

@@ -16,5 +16,7 @@ export default function useProjects({auth} = {auth: null}) {
         setLoading(false);
     }, [auth, setProjects]);
     
-    return {loading, projects};
+    return {
+        loadingProjects: loading,
+        projects};
 }

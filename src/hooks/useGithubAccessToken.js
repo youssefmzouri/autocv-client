@@ -28,7 +28,7 @@ export default function useGithubAccessToken({session, setSession}) {
             // Use code parameter and other parameters to make POST request to proxy_server
             githubService.getAccessToken({Authorization: session.Authorization}, data)
             .then(({access_token, token_type}) => {
-                setToken(`${token_type} ${access_token}`);
+                setToken(`${access_token}`);
                 const newSession = {
                     ...session,
                     tokenGithub: `${access_token}`,
@@ -40,7 +40,6 @@ export default function useGithubAccessToken({session, setSession}) {
                 console.error('Error getting accessToken', error);
             });
         } else {
-            // return githubToken from localStorage and validate it.
             if (session.tokenGithub) {
                 const data = {
                     tokenGithub: session.tokenGithub
@@ -51,9 +50,18 @@ export default function useGithubAccessToken({session, setSession}) {
                     const {success} = response;
                     if (success) {
                         setToken(session.tokenGithub);
+                    } else {
+                        setToken('');
+                        const newSession = {
+                            ...session,
+                            tokenGithub: '',
+                            tokenGithubType: ''
+                        };
+                        setSession(newSession);
+                        updateLocalStorageSession(newSession);
                     }
                 }).catch(error => {
-                    console.error('Token validating error: ', error);
+                    console.log('Token validating error: ', error);
                 });
             }
         }
@@ -61,7 +69,7 @@ export default function useGithubAccessToken({session, setSession}) {
     }, [session, setSession]);
 
     return {
-        isLoading,
+        isLoadingToken: isLoading,
         tokenGithub
     }
 }
