@@ -43,31 +43,47 @@ const useStyles = makeStyles((theme) => ({
     actionButtonsTable: {
         display: 'flex',
         justifyContent: 'flex-end'
+    },
+    textContainer: {
+        display: 'block',
+        maxWidth: '550px',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
     }
 }));
 
-const TableCurriculums = ({curriculums}) => {
+const formatDate = (date) => {
+    let datetime = new Date(date);
+    return datetime.getDate() + "/" +
+        (datetime.getMonth() + 1) + "/" +
+        datetime.getFullYear() + " " +
+        datetime.getHours() + ":" +
+        datetime.getMinutes() + ":" +
+        datetime.getSeconds();
+}
+
+const TableProjects = ({projects}) => {
     const classes = useStyles();
-    let bodyRows = curriculums.map((cv) => {
+    let bodyRows = projects.map((project) => {
         return {
-            id: cv.id,
+            id: project.id,
             content: {
-                name: cv.name,
-                description: cv.description,
-                numProjects: cv.projects.length,
-                language: cv.language,
+                name: project.name,
+                description: project.description,
+                updatedAt: formatDate(project.updatedAt),
             }
         }
     });
     return (
         <>
             <div className={classes.actionButtonsTable}>
-                <Link to={'/curriculums/create'}>
+                <Link to={'/projects/create'}>
                     <Button variant="contained"
                         color="primary"
                         className={classes.button}
                         startIcon={<AddIcon />}>
-                        Add CV
+                        Add Project
                     </Button>
                 </Link>
             </div>
@@ -77,8 +93,7 @@ const TableCurriculums = ({curriculums}) => {
                         <TableRow>
                             <StyledTableCell align="left">Name</StyledTableCell>
                             <StyledTableCell align="left">Description</StyledTableCell>
-                            <StyledTableCell align="right">Num. Projects</StyledTableCell>
-                            <StyledTableCell align="right">Language</StyledTableCell>
+                            <StyledTableCell align="right">UpdatedAt</StyledTableCell>
                             <StyledTableCell align="right">Actions</StyledTableCell>
                         </TableRow>
                     </TableHead>
@@ -87,9 +102,12 @@ const TableCurriculums = ({curriculums}) => {
                             bodyRows.map(({id, content}) => (
                                 <StyledTableRow key={id}>
                                     <StyledTableCell align="left">{content.name}</StyledTableCell>
-                                    <StyledTableCell align="left">{content.description}</StyledTableCell>
-                                    <StyledTableCell align="right">{content.numProjects}</StyledTableCell>
-                                    <StyledTableCell align="right">{content.language}</StyledTableCell>
+                                    <StyledTableCell align="left">
+                                        <div className={classes.textContainer}>
+                                            {content.description}
+                                        </div>
+                                    </StyledTableCell>
+                                    <StyledTableCell align="right">{content.updatedAt}</StyledTableCell>
                                     <StyledTableCell align="right">
                                         some action buttons
                                     </StyledTableCell>
@@ -97,7 +115,7 @@ const TableCurriculums = ({curriculums}) => {
                             ))
                             :
                             <StyledTableRow key="NoData">
-                                <StyledTableCell align="center" colSpan={5}>No data</StyledTableCell>
+                                <StyledTableCell align="center" colSpan={4}>No data</StyledTableCell>
                             </StyledTableRow>
                         }
                     </TableBody>
@@ -107,4 +125,4 @@ const TableCurriculums = ({curriculums}) => {
     )
 }
 
-export default TableCurriculums;
+export default TableProjects;

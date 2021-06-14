@@ -11,6 +11,7 @@ import MyProfile from './pages/MyProfile';
 import Curriculums from './pages/Curriculums';
 import CreateCurriculum from './pages/Curriculums/Create';
 import Projects from './pages/Projects';
+import CreateProject from './pages/Projects/Create';
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
           <RouteProtected path="/curriculums/create" component={CreateCurriculum} />
           
           <RouteProtected path="/projects" component={Projects} />
+          <RouteProtected path="/projects/create" component={CreateProject} />
 
           <RouteProtected path="/laboralExperience" component={Home} />
           <RouteProtected path="/academicExperience" component={Home} />

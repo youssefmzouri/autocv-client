@@ -12,10 +12,19 @@ const getAccessToken = async (headers, data) => {
     }
 }
 
-const getUserRepos = async (headers) => {
+const validateAccessToken = async (headers, data) => {
     try {
-        // const response = await axios.get(baseUrl+'/api/curriculums', {headers});
-        // return response.data;
+        const response = await axios.post(baseUrl+'/api/github/validate', data, {headers});
+        return response.data;
+    } catch (e) {
+        throw e;
+    }
+}
+
+const getUserRepos = async (headers, data) => {
+    try {
+        const response = await axios.post(baseUrl+'/api/github/user/repositories', data, {headers});
+        return response.data;
     } catch (e) {
         console.log('Error getting user repos: ', e);
         throw e;
@@ -24,6 +33,7 @@ const getUserRepos = async (headers) => {
 
 const toExport = {
     getAccessToken,
+    validateAccessToken,
     getUserRepos
 };
 

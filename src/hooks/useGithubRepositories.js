@@ -1,56 +1,27 @@
 import {useEffect, useState} from 'react';
 import githubService from '../services/github';
 
-export default function useGithubRepositories({session, setSession}) {
-    const [loading, setLoading] = useState(true);
-    const [repos, setRepos] = useState([]);
-    const [tokenGithub, setToken] = useState('');
-    
+export default function useGithubRepositories({session}) {
+    const [githubRepos, setGithubRepos] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
-        const url = window.location.href;
-        const hasCode = url.includes("?code=");
+        const data = {
+            tokenGithub: session.tokenGithub
+        };
+        githubService.getUserRepos({Authorization: session.Authorization}, data)
+        .then((result) => {
+            setGithubRepos(JSON.parse(result));
+            setIsLoading(false);
+        }).catch(error => {
+            console.error('Error getting repos ... ', error);
+            setIsLoading(false);
+        });
+    }, [session]);
 
-        if (hasCode) {
-            const newUrl = url.split("?code=");
-            window.history.pushState({}, null, newUrl[0]);
-      
-            const data = {
-              code: newUrl[1]
-            };
-      
-            // Use code parameter and other parameters to make POST request to proxy_server
 
-            githubService.getAccessToken({Authorization: session.Authorization}, data)
-            .then(({access_token, token_type}) => {
-                setToken(`${token_type} ${access_token}`);
-                setLoading(false);
-                const newSession = {...session, tokenGithub: `${token_type} ${access_token}`};
-                setSession(newSession);
-                console.log('Result of getting access token: ', newSession);
-            }).catch(error => {
-                console.error('Error getting accessToken', error);
-            });
-            // fetch(proxy_url, {
-            //   method: "POST",
-            //   body: JSON.stringify(requestData)
-            // })
-            // .then(response => response.json())
-            // .then(data => {
-            //     dispatch({
-            //         type: "LOGIN",
-            //         payload: { user: data, isLoggedIn: true }
-            //     });
-            // })
-            // .catch(error => {
-            //     setData({
-            //         isLoading: false,
-            //         errorMessage: "Sorry! Login failed"
-            //     });
-            // });
-        }
-    }, [session, setSession]);
-    
     return {
-        repos: [],
-    };
+        isLoading,
+        githubRepos
+    }
 }

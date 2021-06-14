@@ -7,13 +7,13 @@ export default function useCurriculums({auth} = {auth: null}) {
     
     useEffect( () => {
         cvService.getUserCurriculums({Authorization: auth})
-            .then(resultCvs => {
-                setCurriculums(resultCvs);
-                setLoading(false);
-                console.log('Curriculums: ', resultCvs);
-            }).catch(error => {
-                console.error('Error getting cvs', error);
-            });
+        .then(resultCvs => {
+            setCurriculums(resultCvs);
+            console.log('Curriculums: ', resultCvs);
+        }).catch(error => {
+            console.error('Error getting cvs', error);
+        });
+        setLoading(false);
     }, [auth, setCurriculums]);
     
     return {loading, curriculums};
