@@ -103,7 +103,6 @@ export default function RepositoriesFromGithub() {
     const classes = useStyles();
     const {session} = useContext(SessionContext);
     const {isLoading, githubRepos} = useGithubRepositories({session});
-    console.log("Repos descargados: ", githubRepos);
     
     return (
         <div className={classes.repsitoriesFromGithubContainer}>

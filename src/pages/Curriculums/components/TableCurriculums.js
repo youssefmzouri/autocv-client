@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -10,7 +10,9 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
-
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AlertDialog from '../../../components/AlertDialog';
 import {Link} from 'wouter';
 
 const StyledTableCell = withStyles((theme) => ({
@@ -43,10 +45,25 @@ const useStyles = makeStyles((theme) => ({
     actionButtonsTable: {
         display: 'flex',
         justifyContent: 'flex-end'
+    },
+    actionButtonsRow: {
+        display: "flex",
+        gap: "10px",
+        justifyContent: 'flex-end',
+        "& > svg": {
+            cursor: "pointer"
+        }
     }
 }));
 
 const TableCurriculums = ({curriculums}) => {
+    const [propsDialog, setPropsDialog] = useState({
+        dialogState: false,
+        title: '',
+        bodyText: '',
+        onAccept: () => {},
+        onCancel: () => {}
+    });
     const classes = useStyles();
     let bodyRows = curriculums.map((cv) => {
         return {
@@ -59,6 +76,24 @@ const TableCurriculums = ({curriculums}) => {
             }
         }
     });
+    const onEditRow = (cv_id) => {
+        console.log('click to edit cv', cv_id);
+    }
+    const onDeleteRow = (cv_id, cv_content) => {
+        console.log('click to delete cv', cv_id, cv_content);
+        setPropsDialog({
+            dialogState: true,
+            title: 'Are you sure?',
+            bodyText: `You are going to delete a CV with name "${cv_content.name}" completely with this action.`,
+            onAccept: () => {
+                console.log('ejecutando el delete ...');
+                setPropsDialog({dialogState: false});
+            },
+            onCancel: () => {
+                setPropsDialog({dialogState: false});
+            }
+        });
+    }
     return (
         <>
             <div className={classes.actionButtonsTable}>
@@ -90,8 +125,9 @@ const TableCurriculums = ({curriculums}) => {
                                     <StyledTableCell align="left">{content.description}</StyledTableCell>
                                     <StyledTableCell align="right">{content.numProjects}</StyledTableCell>
                                     <StyledTableCell align="right">{content.language}</StyledTableCell>
-                                    <StyledTableCell align="right">
-                                        some action buttons
+                                    <StyledTableCell className={classes.actionButtonsRow} align="justify">
+                                        <EditIcon aria-label="Edit CV" color="primary" fontSize="small" onClick={() => onEditRow(id)} />
+                                        <DeleteIcon aria-label="Delete CV" color="secondary" fontSize="small" onClick={() => onDeleteRow(id, content)} />
                                     </StyledTableCell>
                                 </StyledTableRow>
                             ))
@@ -103,6 +139,7 @@ const TableCurriculums = ({curriculums}) => {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <AlertDialog {...propsDialog} />
         </>
     )
 }

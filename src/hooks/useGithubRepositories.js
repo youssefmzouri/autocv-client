@@ -13,11 +13,12 @@ export default function useGithubRepositories({session}) {
         .then((result) => {
             setGithubRepos(JSON.parse(result));
             setIsLoading(false);
+            console.log('Repos descargados: ', JSON.parse(result));
         }).catch(error => {
             console.error('Error getting repos ... ', error);
             setIsLoading(false);
         });
-    }, [session]);
+    }, [session, setGithubRepos]);
 
 
     return {
