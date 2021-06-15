@@ -9,9 +9,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 export default function AlertDialog({dialogState, title, bodyText, onAccept, onCancel}) {
     return (
         <div className="alertDialogContainer">
-            {/* <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-                Open alert dialog
-            </Button> */}
             <Dialog
                 open={dialogState}
                 onClose={onCancel}
@@ -27,10 +24,10 @@ export default function AlertDialog({dialogState, title, bodyText, onAccept, onC
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={onCancel} color="primary">
+                    <Button onClick={onCancel} color="secondary">
                         Cancel
                     </Button>
-                    <Button onClick={onAccept} color="secondary">
+                    <Button onClick={onAccept} color="primary">
                         Accept
                     </Button>
                 </DialogActions>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -13,6 +13,7 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AlertDialog from '../../../components/AlertDialog';
+import cvService from '../../../services/curriculums';
 import {Link} from 'wouter';
 
 const StyledTableCell = withStyles((theme) => ({
@@ -53,10 +54,23 @@ const useStyles = makeStyles((theme) => ({
         "& > svg": {
             cursor: "pointer"
         }
+    },
+    cellDesc: {
+        maxWidth: "600px",
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
     }
 }));
 
-const TableCurriculums = ({curriculums}) => {
+const TableCurriculums = ({curriculums, session}) => {
+    const [cvs, setCvs] = useState([...curriculums]);
+
+    useEffect(() => {
+        setCvs(curriculums);
+    }, [curriculums, session]);
+
+
     const [propsDialog, setPropsDialog] = useState({
         dialogState: false,
         title: '',
@@ -65,7 +79,7 @@ const TableCurriculums = ({curriculums}) => {
         onCancel: () => {}
     });
     const classes = useStyles();
-    let bodyRows = curriculums.map((cv) => {
+    let bodyRows = cvs.map((cv) => {
         return {
             id: cv.id,
             content: {
@@ -77,17 +91,25 @@ const TableCurriculums = ({curriculums}) => {
         }
     });
     const onEditRow = (cv_id) => {
-        console.log('click to edit cv', cv_id);
+        // console.log('click to edit cv', cv_id);
     }
     const onDeleteRow = (cv_id, cv_content) => {
-        console.log('click to delete cv', cv_id, cv_content);
         setPropsDialog({
             dialogState: true,
             title: 'Are you sure?',
             bodyText: `You are going to delete a CV with name "${cv_content.name}" completely with this action.`,
             onAccept: () => {
-                console.log('ejecutando el delete ...');
-                setPropsDialog({dialogState: false});
+                cvService.deleteUserCurriculum({Authorization: session.Authorization}, cv_id)
+                .then(() => {
+                    const new_cvs = cvs.filter( cv => {
+                        return cv.id !== cv_id
+                    });
+                    setCvs(new_cvs);
+                    setPropsDialog({dialogState: false});
+                }).catch(error => {
+                    console.log('Deleted cv ERROR: ', error);
+                    setPropsDialog({dialogState: false});
+                });
             },
             onCancel: () => {
                 setPropsDialog({dialogState: false});
@@ -122,7 +144,7 @@ const TableCurriculums = ({curriculums}) => {
                             bodyRows.map(({id, content}) => (
                                 <StyledTableRow key={id}>
                                     <StyledTableCell align="left">{content.name}</StyledTableCell>
-                                    <StyledTableCell align="left">{content.description}</StyledTableCell>
+                                    <StyledTableCell className={classes.cellDesc} align="left">{content.description}</StyledTableCell>
                                     <StyledTableCell align="right">{content.numProjects}</StyledTableCell>
                                     <StyledTableCell align="right">{content.language}</StyledTableCell>
                                     <StyledTableCell className={classes.actionButtonsRow} align="justify">

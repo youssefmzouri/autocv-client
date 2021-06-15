@@ -16,6 +16,7 @@ export default function Curriculums() {
                     ? 'Loading ...'
                     : <TableCurriculums
                         curriculums={curriculums}
+                        session={session}
                     />
                 }
             </SubPage>
