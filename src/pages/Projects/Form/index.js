@@ -7,12 +7,13 @@ import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 import CloseIcon from '@material-ui/icons/Close';
 
-import {Link} from 'wouter';
+import {Link, useRoute } from 'wouter';
 import projectsService from '../../../services/projects';
 import Notification from '../../../components/Notification';
 import SessionContext from '../../../context/SessionContext';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import { useEffect } from 'react';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -32,34 +33,65 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function CreateProject() {
+export default function FormProject() {
     const classes = useStyles();
-
+    const [match, params] = useRoute('/projects/edit/:id');
     const {session} = useContext(SessionContext);
     const [projectName, setProjectName] = useState('');
     const [projectDescription, setProjectDescription] = useState('');
     const [isFromGithub, setIsFromGithub] = useState(false);
     const [githubUri, setGithubUri] = useState('');
     const [notificationMessage, setNotificationMessage] = useState({message: null, severity: null});
+    const [isEditPage, setIsEditPage] = useState(false);
+    
+    useEffect( () => {
+        if (match) {
+            setIsEditPage(true);
+            projectsService.getUserProject({Authorization: session.Authorization}, params.id)
+            .then(project => {
+                console.log('This is the edit project page: ', project);
+                setProjectName(project.name);
+                setProjectDescription(project.description);
+                setIsFromGithub(project.isFromGithub);
+                setGithubUri(project.githubUri);
+            }).catch(error => {
+                console.log('Error getting projects by id', error)
+            });
+        }
+    }, [setIsEditPage, match]);
 
-    const handleCreation = async (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const project = await projectsService.postUserProjects({"Authorization": session.Authorization}, {
+            const data  = {
                 name: projectName,
                 description: projectDescription,
                 isFromGithub,
-                githubUri
-            });
+                githubUri: isFromGithub ? githubUri : ''
+            };
+            let project; 
             
-            setProjectName('');
-            setProjectDescription('');
-            setIsFromGithub(false);
-            setGithubUri('');
-            setNotificationMessage({
-                message: `El project se ha creado correctamente con el siguiente id: ${project.id}`,
-                severity: 'success'
-            });
+            if (isEditPage) {
+                project = await projectsService.updateUserProject({"Authorization": session.Authorization}, {id: params.id, ...data});
+                setProjectName(project.name);
+                setProjectDescription(project.description);
+                setIsFromGithub(project.isFromGithub);
+                setGithubUri(project.githubUri);
+                setNotificationMessage({
+                    message: `The project was updated succesfully with date: ${project.updatedAt}`,
+                    severity: 'success'
+                });
+            } else {
+                project = await projectsService.postUserProjects({"Authorization": session.Authorization}, data);
+                setProjectName('');
+                setProjectDescription('');
+                setIsFromGithub(false);
+                setGithubUri('');
+                setNotificationMessage({
+                    message: `The project was created succesfully with date: ${project.updatedAt}`,
+                    severity: 'success'
+                });
+            }
         } catch (e) {
             console.log('Invalid data');
             setNotificationMessage({message:'Invalid data', severity: 'error'});
@@ -73,7 +105,7 @@ export default function CreateProject() {
         <div className="projectsCreateContainer">
             <SubPage>
                 <h2>Describe one of the projects you've been working</h2>
-                <form className={classes.root} onSubmit={handleCreation} noValidate autoComplete="off">
+                <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
                     <Grid container>
                         <Grid item xs={12}>
                             <Notification message={notificationMessage.message} severity={notificationMessage.severity}/>
@@ -156,11 +188,11 @@ export default function CreateProject() {
                     </Link>
                     
                     <Button variant="contained"
-                        onClick={handleCreation}
+                        onClick={handleSubmit}
                         color="primary"
                         className={classes.button}
                         startIcon={<SaveIcon />}>
-                        Save Project
+                        {isEditPage? 'Update Project':'Save Project'}
                     </Button>
                 </div>
             </SubPage>

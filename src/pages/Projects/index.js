@@ -20,6 +20,7 @@ export default function Projects() {
                 {loadingProjects
                     ? 'Loading ...'
                     : <TableProjects
+                        session={session}
                         projects={projects}
                     />
                 }

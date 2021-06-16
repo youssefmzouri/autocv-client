@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -10,8 +10,12 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
-
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AlertDialog from '../../../components/AlertDialog';
 import {Link} from 'wouter';
+
+import projectsService from '../../../services/projects';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -50,7 +54,15 @@ const useStyles = makeStyles((theme) => ({
         whiteSpace: 'nowrap',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
-    }
+    },
+    actionButtonsRow: {
+        display: "flex",
+        gap: "10px",
+        justifyContent: 'flex-end',
+        "& > svg": {
+            cursor: "pointer"
+        }
+    },
 }));
 
 const formatDate = (date) => {
@@ -63,9 +75,23 @@ const formatDate = (date) => {
         datetime.getSeconds();
 }
 
-const TableProjects = ({projects}) => {
+const TableProjects = ({projects, session}) => {
+    const [stateProjects, setStateProjects] = useState([...projects]);
+
+    useEffect(() => {
+        setStateProjects(projects);
+    }, [projects, session]);
+
+    const [propsDialog, setPropsDialog] = useState({
+        dialogState: false,
+        title: '',
+        bodyText: '',
+        onAccept: () => {},
+        onCancel: () => {}
+    });
+
     const classes = useStyles();
-    let bodyRows = projects.map((project) => {
+    let bodyRows = stateProjects.map((project) => {
         return {
             id: project.id,
             content: {
@@ -75,6 +101,30 @@ const TableProjects = ({projects}) => {
             }
         }
     });
+
+    const onDeleteRow = (project_id, project_content) => {
+        setPropsDialog({
+            dialogState: true,
+            title: 'Are you sure?',
+            bodyText: `You are going to delete a project with name "${project_content.name}" completely with this action.`,
+            onAccept: () => {
+                projectsService.deleteUserProjects({Authorization: session.Authorization}, project_id)
+                .then(() => {
+                    const new_projects = stateProjects.filter( project => {
+                        return project.id !== project_id
+                    });
+                    setStateProjects(new_projects);
+                    setPropsDialog({dialogState: false});
+                }).catch(error => {
+                    console.log('Deleted project ERROR: ', error);
+                    setPropsDialog({dialogState: false});
+                });
+            },
+            onCancel: () => {
+                setPropsDialog({dialogState: false});
+            }
+        });
+    }
     return (
         <>
             <div className={classes.actionButtonsTable}>
@@ -108,8 +158,11 @@ const TableProjects = ({projects}) => {
                                         </div>
                                     </StyledTableCell>
                                     <StyledTableCell align="right">{content.updatedAt}</StyledTableCell>
-                                    <StyledTableCell align="right">
-                                        some action buttons
+                                    <StyledTableCell className={classes.actionButtonsRow} align="justify">
+                                        <Link href={`/projects/edit/${id}`}>
+                                            <EditIcon aria-label="Edit Project" color="primary" fontSize="small" />
+                                        </Link>
+                                        <DeleteIcon aria-label="Delete Project" color="secondary" fontSize="small" onClick={() => onDeleteRow(id, content)} />
                                     </StyledTableCell>
                                 </StyledTableRow>
                             ))
@@ -121,6 +174,7 @@ const TableProjects = ({projects}) => {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <AlertDialog {...propsDialog} />
         </>
     )
 }
