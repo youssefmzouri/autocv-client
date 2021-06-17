@@ -13,6 +13,7 @@ import Notification from '../../../components/Notification';
 import SessionContext from '../../../context/SessionContext';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useEffect } from 'react';
 
 
@@ -29,6 +30,15 @@ const useStyles = makeStyles((theme) => ({
     actionButtonsTable:{
         display: 'flex',
         justifyContent: 'flex-end'
+    },
+    headerPage: {
+        display: "flex",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        "& > svg": {
+            cursor: "pointer",
+            margin: "0 10px 0 10px"
+        }
     }
 }));
 
@@ -104,7 +114,12 @@ export default function FormProject() {
     return (
         <div className="projectsCreateContainer">
             <SubPage>
-                <h2>Describe one of the projects you've been working</h2>
+                <div className={classes.headerPage}>
+                    <Link to="/projects">
+                        <ArrowBackIcon color="primary" />
+                    </Link>
+                    <h2>Describe one of the projects you've been working</h2>
+                </div>
                 <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
                     <Grid container>
                         <Grid item xs={12}>

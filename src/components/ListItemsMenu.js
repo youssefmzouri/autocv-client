@@ -29,7 +29,7 @@ const mainListItems = (
                 <ListItemText primary="Projects" />
             </ListItem>
         </Link>
-        <Link to="laboralExperience">
+        <Link to="laboralexperiences">
             <ListItem button>
                 <ListItemIcon>
                     <WorkIcon />

@@ -12,6 +12,8 @@ import Curriculums from './pages/Curriculums';
 import CreateCurriculum from './pages/Curriculums/Create';
 import Projects from './pages/Projects';
 import FormProject from './pages/Projects/Form';
+import LaboralExperience from './pages/LaboralExperience';
+import FormLaboralExperience from './pages/LaboralExperience/Form';
 
 export default function App() {
   return (
@@ -32,10 +34,14 @@ export default function App() {
           <RouteProtected path="/projects/create" component={FormProject} />
           <RouteProtected path="/projects/edit/:id" component={FormProject} />
 
+          <RouteProtected path="/laboralexperiences" component={LaboralExperience} />
+          <RouteProtected path="/laboralexperiences/create" component={FormLaboralExperience} />
+          
+          <RouteProtected path="/academicExperience" component={Home} />
+          
           <RouteProtected path="/personalInfo" component={Home} />
           <RouteProtected path="/profilePhotos" component={Home} />
-          <RouteProtected path="/laboralExperience" component={Home} />
-          <RouteProtected path="/academicExperience" component={Home} />
+          
           
           <RouteProtected path="/templates" component={Home} />
           
