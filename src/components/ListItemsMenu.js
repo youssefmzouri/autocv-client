@@ -13,7 +13,7 @@ import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 
 const mainListItems = (
     <>
-        <Link to="curriculums">
+        <Link to="/curriculums">
             <ListItem button>
                     <ListItemIcon>
                         <DescriptionIcon />
@@ -21,7 +21,7 @@ const mainListItems = (
                     <ListItemText primary="Curriculums" />
             </ListItem>
         </Link>
-        <Link to="projects">
+        <Link to="/projects">
             <ListItem button>
                 <ListItemIcon>
                     <FolderSpecialIcon />
@@ -29,7 +29,7 @@ const mainListItems = (
                 <ListItemText primary="Projects" />
             </ListItem>
         </Link>
-        <Link to="laboralexperiences">
+        <Link to="/laboralexperiences">
             <ListItem button>
                 <ListItemIcon>
                     <WorkIcon />
@@ -37,7 +37,7 @@ const mainListItems = (
                 <ListItemText primary="Laboral experience" />
             </ListItem>
         </Link>
-        <Link to="academicExperience">
+        <Link to="/academicExperience">
             <ListItem button>
                 <ListItemIcon>
                     <SchoolIcon />
@@ -45,15 +45,15 @@ const mainListItems = (
                 <ListItemText primary="Academic experience" />
             </ListItem>
         </Link>
-        <Link to="templates">
+        {/* <Link to="templates">
             <ListItem button>
                 <ListItemIcon>
                     <DashboardIcon />
                 </ListItemIcon>
                 <ListItemText primary="Templates" />
             </ListItem>
-        </Link>
-        <Link to="personalInfo">
+        </Link> */}
+        <Link to="/personalInfo">
             <ListItem button>
                 <ListItemIcon>
                     <ContactPhoneIcon />
@@ -61,7 +61,7 @@ const mainListItems = (
                 <ListItemText primary="Personal info" />
             </ListItem>
         </Link>
-        <Link to="profilePhotos">
+        <Link to="/profilePhotos">
             <ListItem button>
                 <ListItemIcon>
                     <FaceIcon />
