@@ -10,10 +10,16 @@ import Welcome from './pages/Welcome';
 import MyProfile from './pages/MyProfile';
 import Curriculums from './pages/Curriculums';
 import CreateCurriculum from './pages/Curriculums/Create';
+import EditCurriculum from './pages/Curriculums/Edit';
 import Projects from './pages/Projects';
 import FormProject from './pages/Projects/Form';
 import LaboralExperience from './pages/LaboralExperience';
 import FormLaboralExperience from './pages/LaboralExperience/Form';
+import AcademicExperience from './pages/AcademicExperience';
+import FormAcademicExperience from './pages/AcademicExperience/Form';
+import PersonalInfo from './pages/PersonalInfo';
+import FormPersonalInfo from './pages/PersonalInfo/Form';
+import ProfilePhotos from './pages/ProfilePhotos';
 
 export default function App() {
   return (
@@ -29,6 +35,7 @@ export default function App() {
           
           <RouteProtected path="/curriculums" component={Curriculums} />
           <RouteProtected path="/curriculums/create" component={CreateCurriculum} />
+          <RouteProtected path="/curriculums/edit/:id" component={EditCurriculum} />
           
           <RouteProtected path="/projects" component={Projects} />
           <RouteProtected path="/projects/create" component={FormProject} />
@@ -37,14 +44,15 @@ export default function App() {
           <RouteProtected path="/laboralexperiences" component={LaboralExperience} />
           <RouteProtected path="/laboralexperiences/create" component={FormLaboralExperience} />
           
-          <RouteProtected path="/academicExperience" component={Home} />
+          <RouteProtected path="/academicexperiences" component={AcademicExperience} />
+          <RouteProtected path="/academicexperiences/create" component={FormAcademicExperience} />
           
-          <RouteProtected path="/personalInfo" component={Home} />
-          <RouteProtected path="/profilePhotos" component={Home} />
+          <RouteProtected path="/personalInfo" component={PersonalInfo} />
+          <RouteProtected path="/personalInfo/create" component={FormPersonalInfo} />
+
+          <RouteProtected path="/profilePhotos" component={ProfilePhotos} />
           
-          
-          <RouteProtected path="/templates" component={Home} />
-          
+          {/* <RouteProtected path="/templates" component={Home} /> */}
           <Route><h1>404 - Not found!</h1></Route>
         </Switch>
       </SessionContextProvider>

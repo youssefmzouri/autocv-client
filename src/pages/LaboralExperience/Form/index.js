@@ -129,7 +129,7 @@ export default function FormLaboralExperience() {
     };
     
     return (
-        <div className="projectsCreateContainer">
+        <div className="laboralExperienceCreateContainer">
             <SubPage>
                 <div className={classes.headerPage}>
                     <Link to="/laboralexperiences">

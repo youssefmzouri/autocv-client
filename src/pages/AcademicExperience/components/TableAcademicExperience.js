@@ -63,63 +63,63 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const TableLaboralExperience = ({laboralExp, session}) => {
-    const [stateLaboralExp, setStateLaboralExp] = useState([...laboralExp]);
+const TableAcademicExperience = ({academicExp, session}) => {
+    const classes = useStyles();
+    // const [stateLaboralExp, setStateLaboralExp] = useState([...academicExp]);
 
     useEffect(() => {
-        setStateLaboralExp(laboralExp);
-    }, [laboralExp, session]);
+        // setStateLaboralExp(academicExp);
+    }, [academicExp, session]);
 
 
-    const [propsDialog, setPropsDialog] = useState({
-        dialogState: false,
-        title: '',
-        bodyText: '',
-        onAccept: () => {},
-        onCancel: () => {}
-    });
-    const classes = useStyles();
-    let bodyRows = stateLaboralExp.map((lexp) => {
-        return {
-            id: lexp.id,
-            content: {
-                name: lexp.name,
-                description: lexp.description,
-                numProjects: lexp.projects.length,
-                language: lexp.language,
-            }
-        }
-    });
+    // const [propsDialog, setPropsDialog] = useState({
+    //     dialogState: false,
+    //     title: '',
+    //     bodyText: '',
+    //     onAccept: () => {},
+    //     onCancel: () => {}
+    // });
+    // let bodyRows = stateLaboralExp.map((lexp) => {
+    //     return {
+    //         id: lexp.id,
+    //         content: {
+    //             name: lexp.name,
+    //             description: lexp.description,
+    //             numProjects: lexp.projects.length,
+    //             language: lexp.language,
+    //         }
+    //     }
+    // });
     const onEditRow = (id) => {
         // console.log('click to edit cv', cv_id);
     }
     const onDeleteRow = (id, content) => {
-        setPropsDialog({
-            dialogState: true,
-            title: 'Are you sure?',
-            bodyText: `You are going to delete a laboral experience with name "${content.name}" completely with this action.`,
-            onAccept: () => {
-                laboralExpService.deleteUserCurriculum({Authorization: session.Authorization}, id)
-                .then(() => {
-                    const new_cvs = stateLaboralExp.filter( cv => {
-                        return cv.id !== id
-                    });
-                    setStateLaboralExp(new_cvs);
-                    setPropsDialog({dialogState: false});
-                }).catch(error => {
-                    console.log('Deleted cv ERROR: ', error);
-                    setPropsDialog({dialogState: false});
-                });
-            },
-            onCancel: () => {
-                setPropsDialog({dialogState: false});
-            }
-        });
+        // setPropsDialog({
+        //     dialogState: true,
+        //     title: 'Are you sure?',
+        //     bodyText: `You are going to delete a laboral experience with name "${content.name}" completely with this action.`,
+        //     onAccept: () => {
+        //         laboralExpService.deleteUserCurriculum({Authorization: session.Authorization}, id)
+        //         .then(() => {
+        //             const new_cvs = stateLaboralExp.filter( cv => {
+        //                 return cv.id !== id
+        //             });
+        //             setStateLaboralExp(new_cvs);
+        //             setPropsDialog({dialogState: false});
+        //         }).catch(error => {
+        //             console.log('Deleted cv ERROR: ', error);
+        //             setPropsDialog({dialogState: false});
+        //         });
+        //     },
+        //     onCancel: () => {
+        //         setPropsDialog({dialogState: false});
+        //     }
+        // });
     }
     return (
         <>
             <div className={classes.actionButtonsTable}>
-                <Link to={'/laboralexperiences/create'}>
+                <Link to={'/academicexperiences/create'}>
                     <Button variant="contained"
                         color="primary"
                         className={classes.button}
@@ -132,10 +132,9 @@ const TableLaboralExperience = ({laboralExp, session}) => {
                 <Table className={classes.table} aria-label="customized table">
                     <TableHead>
                         <TableRow>
-                            <StyledTableCell align="left">Company name</StyledTableCell>
-                            <StyledTableCell align="left">Postition</StyledTableCell>
-                            <StyledTableCell align="right">Start date</StyledTableCell>
-                            <StyledTableCell align="right">End date</StyledTableCell>
+                            <StyledTableCell align="left">School</StyledTableCell>
+                            <StyledTableCell align="left">Name Degree</StyledTableCell>
+                            <StyledTableCell align="right">End year</StyledTableCell>
                             <StyledTableCell align="right">Actions</StyledTableCell>
                         </TableRow>
                     </TableHead>
@@ -160,30 +159,27 @@ const TableLaboralExperience = ({laboralExp, session}) => {
                         } */}
 
                         <StyledTableRow >
-                            <StyledTableCell align="left">AEM Sistemas</StyledTableCell>
-                            <StyledTableCell align="left">Full-stack Developer</StyledTableCell>
-                            <StyledTableCell align="right">11/2015</StyledTableCell>
-                            <StyledTableCell align="right">09/2016</StyledTableCell>
+                            <StyledTableCell align="left">Institut IES Thos i Codina</StyledTableCell>
+                            <StyledTableCell align="left">Técnico en sistemas micorinformáticos y redes</StyledTableCell>
+                            <StyledTableCell align="right">2012</StyledTableCell>
                             <StyledTableCell className={classes.actionButtonsRow} align="justify">
                                 <EditIcon aria-label="Edit Experience" color="primary" fontSize="small" onClick={() => onEditRow('id')} />
                                 <DeleteIcon aria-label="Delete Experience" color="secondary" fontSize="small" onClick={() => onDeleteRow('id', 'content')} />
                             </StyledTableCell>
                         </StyledTableRow>
                         <StyledTableRow >
-                            <StyledTableCell align="left">Matarogroc SL</StyledTableCell>
-                            <StyledTableCell align="left">Full-stack Web Developer</StyledTableCell>
-                            <StyledTableCell align="right">09/2016</StyledTableCell>
-                            <StyledTableCell align="right">09/2017</StyledTableCell>
+                            <StyledTableCell align="left">Institut IES Thos i Codina</StyledTableCell>
+                            <StyledTableCell align="left">Técnico superior en desarollo de aplicaciones web</StyledTableCell>
+                            <StyledTableCell align="right">2016</StyledTableCell>
                             <StyledTableCell className={classes.actionButtonsRow} align="justify">
                                 <EditIcon aria-label="Edit Experience" color="primary" fontSize="small" onClick={() => onEditRow('id')} />
                                 <DeleteIcon aria-label="Delete Experience" color="secondary" fontSize="small" onClick={() => onDeleteRow('id', 'content')} />
                             </StyledTableCell>
                         </StyledTableRow>
                         <StyledTableRow >
-                            <StyledTableCell align="left">Catalogplayer</StyledTableCell>
-                            <StyledTableCell align="left">Full-stack Javascript Developer</StyledTableCell>
-                            <StyledTableCell align="right">09/2017</StyledTableCell>
-                            <StyledTableCell align="right">still working here</StyledTableCell>
+                            <StyledTableCell align="left">Universitat Autonoma de Barcelona</StyledTableCell>
+                            <StyledTableCell align="left">Graduado en Ingenieria de Software</StyledTableCell>
+                            <StyledTableCell align="right">2021</StyledTableCell>
                             <StyledTableCell className={classes.actionButtonsRow} align="justify">
                                 <EditIcon aria-label="Edit Experience" color="primary" fontSize="small" onClick={() => onEditRow('id')} />
                                 <DeleteIcon aria-label="Delete Experience" color="secondary" fontSize="small" onClick={() => onDeleteRow('id', 'content')} />
@@ -192,9 +188,9 @@ const TableLaboralExperience = ({laboralExp, session}) => {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <AlertDialog {...propsDialog} />
+            {/* <AlertDialog {...propsDialog} /> */}
         </>
     )
 }
 
-export default TableLaboralExperience;
+export default TableAcademicExperience;

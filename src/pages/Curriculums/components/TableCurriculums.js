@@ -148,7 +148,9 @@ const TableCurriculums = ({curriculums, session}) => {
                                     <StyledTableCell align="right">{content.numProjects}</StyledTableCell>
                                     <StyledTableCell align="right">{content.language}</StyledTableCell>
                                     <StyledTableCell className={classes.actionButtonsRow} align="justify">
-                                        <EditIcon aria-label="Edit CV" color="primary" fontSize="small" onClick={() => onEditRow(id)} />
+                                        <Link href={`/curriculums/edit/${id}`}>
+                                            <EditIcon aria-label="Edit CV" color="primary" fontSize="small" />
+                                        </Link>
                                         <DeleteIcon aria-label="Delete CV" color="secondary" fontSize="small" onClick={() => onDeleteRow(id, content)} />
                                     </StyledTableCell>
                                 </StyledTableRow>

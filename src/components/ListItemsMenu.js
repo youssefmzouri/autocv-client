@@ -3,7 +3,7 @@ import {Link} from 'wouter';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import DashboardIcon from '@material-ui/icons/Dashboard';
+// import DashboardIcon from '@material-ui/icons/Dashboard';
 import FaceIcon from '@material-ui/icons/Face';
 import DescriptionIcon from '@material-ui/icons/Description';
 import FolderSpecialIcon from '@material-ui/icons/FolderSpecial';
@@ -37,7 +37,7 @@ const mainListItems = (
                 <ListItemText primary="Laboral experience" />
             </ListItem>
         </Link>
-        <Link to="/academicExperience">
+        <Link to="/academicexperiences">
             <ListItem button>
                 <ListItemIcon>
                     <SchoolIcon />
