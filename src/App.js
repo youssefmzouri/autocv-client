@@ -43,12 +43,15 @@ export default function App() {
 
           <RouteProtected path="/laboralexperiences" component={LaboralExperience} />
           <RouteProtected path="/laboralexperiences/create" component={FormLaboralExperience} />
+          <RouteProtected path="/laboralexperiences/edit/:id" component={FormLaboralExperience} />
           
           <RouteProtected path="/academicexperiences" component={AcademicExperience} />
           <RouteProtected path="/academicexperiences/create" component={FormAcademicExperience} />
-          
+          <RouteProtected path="/academicexperiences/edit/:id" component={FormAcademicExperience} />
+
           <RouteProtected path="/personalInfo" component={PersonalInfo} />
           <RouteProtected path="/personalInfo/create" component={FormPersonalInfo} />
+          <RouteProtected path="/personalInfo/edit/:id" component={FormPersonalInfo} />
 
           <RouteProtected path="/profilePhotos" component={ProfilePhotos} />
           

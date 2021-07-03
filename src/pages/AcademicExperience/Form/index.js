@@ -11,7 +11,7 @@ import {MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers'
   
 
 import {Link, useRoute } from 'wouter';
-// import laboralExpService from '../../../services/laboralExperience';
+import academicExpService from '../../../services/academicExperience';
 import Notification from '../../../components/Notification';
 import SessionContext from '../../../context/SessionContext';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -48,8 +48,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FormAcademicExperience() {
     const classes = useStyles();
-    // const [match, params] = useRoute('/projects/edit/:id');
-    const match = false;
+    const [match, params] = useRoute('/academicexperiences/edit/:id');
     const {session} = useContext(SessionContext);
     
     const [schoolName, setSchoolName] = useState('');
@@ -58,77 +57,63 @@ export default function FormAcademicExperience() {
     const [stillActive, setStillActive] = useState(false);
     const [notificationMessage, setNotificationMessage] = useState({message: null, severity: null});
     const [isEditPage, setIsEditPage] = useState(false);
-
-    // to delete
-    const [location, setLocation] = useState('');
-    const [companyWebPage, setCompanyWebPage] = useState('');
-    const [startDate, setStartDate] = useState(new Date());
-    const [laboralExperienceDescription, setLaboralExperienceDescription] = useState('');
     
     useEffect( () => {
         if (match) {
-            // setIsEditPage(true);
-            // laboralExpService.getUserProject({Authorization: session.Authorization}, params.id)
-            // .then(lexp => {
-            //     console.log('This is the edit project page: ', lexp);
-            //     setCompanyName(lexp.name);
-            //     setLaboralExperienceDescription(lexp.description);
-            //     setStillWorkingHere(lexp.isFromGithub);
-            // }).catch(error => {
-            //     console.log('Error getting projects by id', error)
-            // });
+            setIsEditPage(true);
+            academicExpService.getOneUserAcademicExp({Authorization: session.Authorization}, params.id)
+            .then(acaExp => {
+                console.log('This is the edit academic experience page: ', acaExp);
+                setSchoolName(acaExp.school);
+                setDegree(acaExp.degree);
+                setStillActive(acaExp.stillActive);
+                setEndYear(acaExp.endYear);
+            }).catch(error => {
+                console.log('Error getting projects by id', error)
+            });
         }
     }, [setIsEditPage, match]);
 
     const handleSubmit = async (event) => {
-        // event.preventDefault();
-        // try {
-        //     const data  = {
-        //         companyName,
-        //         position,
-        //         description: laboralExperienceDescription,
-        //         stillActive: stillWorkingHere,
-        //         startDate,
-        //         endDate : stillWorkingHere ? '' : endDate,
-        //         location,
-        //         companyWebPage
-        //     };
-        //     let lexp; 
+        event.preventDefault();
+        try {
+            const data  = {
+                school: schoolName,
+                degree,
+                stillActive,
+                endYear : stillActive ? '' : endYear
+            };
+            let acaExp; 
             
-        //     if (isEditPage) {
-        //         // lexp = await laboralExpService.updateUserProject({"Authorization": session.Authorization}, {id: params.id, ...data});
-        //         // setProjectName(lexp.name);
-        //         // setProjectDescription(lexp.description);
-        //         // setIsFromGithub(lexp.isFromGithub);
-        //         // setGithubUri(lexp.githubUri);
-        //         // setNotificationMessage({
-        //         //     message: `The laboral experience was updated succesfully with date: ${lexp.updatedAt}`,
-        //         //     severity: 'success'
-        //         // });
-        //     } else {
-        //         console.log('Sending data to backend', data);
-        //         // lexp = await laboralExpService.postUserLaboralExp({"Authorization": session.Authorization}, data);
-        //         // setLocation('');
-        //         // setPosition('');
-        //         // setStartDate(new Date());
-        //         // setEndDate(new Date());
-        //         // setCompanyName('');
-        //         // setCompanyWebPage('');
-        //         // setLaboralExperienceDescription('');
-        //         // setStillWorkingHere(false);
-                
-        //         // setNotificationMessage({
-        //         //     message: `The laboral experience was created succesfully with date: ${lexp.updatedAt}`,
-        //         //     severity: 'success'
-        //         // });
-        //     }
-        // } catch (e) {
-        //     console.log('Invalid data');
-        //     setNotificationMessage({message:'Invalid data', severity: 'error'});
-        //     setTimeout(() => {
-        //         setNotificationMessage({message:null});
-        //     }, 5000);
-        // }
+            if (isEditPage) {
+                acaExp = await academicExpService.updateUserAcademicExp({"Authorization": session.Authorization}, params.id, data);
+                setSchoolName(acaExp.school);
+                setDegree(acaExp.degree);
+                setStillActive(acaExp.stillActive);
+                setEndYear(acaExp.endYear);
+                setNotificationMessage({
+                    message: `The academic experience was updated succesfully with date: ${acaExp.updatedAt}`,
+                    severity: 'success'
+                });
+            } else {
+                console.log('Sending data to create academic experience', data);
+                acaExp = await academicExpService.postUserAcademicExp({"Authorization": session.Authorization}, data);
+                setSchoolName('');
+                setDegree('');
+                setStillActive(false);
+                setEndYear(new Date());                
+                setNotificationMessage({
+                    message: `The academic experience was created succesfully with date: ${acaExp.updatedAt}`,
+                    severity: 'success'
+                });
+            }
+        } catch (e) {
+            console.log('Invalid data');
+            setNotificationMessage({message:'Invalid data', severity: 'error'});
+            setTimeout(() => {
+                setNotificationMessage({message:null});
+            }, 5000);
+        }
     };
     
     return (
@@ -186,6 +171,7 @@ export default function FormAcademicExperience() {
                                     margin="normal"
                                     id="date-picker-inline"
                                     label="End year"
+                                    disabled={stillActive}
                                     required
                                     value={endYear}
                                     onChange={(date) => {

@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FormLaboralExperience() {
     const classes = useStyles();
-    const [match, params] = useRoute('/projects/edit/:id');
+    const [match, params] = useRoute('/laboralexperiences/edit/:id');
     const {session} = useContext(SessionContext);
     
     const [companyName, setCompanyName] = useState('');
@@ -57,23 +57,28 @@ export default function FormLaboralExperience() {
     const [companyWebPage, setCompanyWebPage] = useState('');
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date);
-    const [laboralExperienceDescription, setLaboralExperienceDescription] = useState('');
-    const [stillWorkingHere, setStillWorkingHere] = useState(false);
+    const [description, setDescription] = useState('');
+    const [stillActive, setStillActive] = useState(false);
     const [notificationMessage, setNotificationMessage] = useState({message: null, severity: null});
     const [isEditPage, setIsEditPage] = useState(false);
     
     useEffect( () => {
         if (match) {
-            // setIsEditPage(true);
-            // laboralExpService.getUserProject({Authorization: session.Authorization}, params.id)
-            // .then(lexp => {
-            //     console.log('This is the edit project page: ', lexp);
-            //     setCompanyName(lexp.name);
-            //     setLaboralExperienceDescription(lexp.description);
-            //     setStillWorkingHere(lexp.isFromGithub);
-            // }).catch(error => {
-            //     console.log('Error getting projects by id', error)
-            // });
+            setIsEditPage(true);
+            laboralExpService.getOneUserLaboralExp({Authorization: session.Authorization}, params.id)
+            .then(lexp => {
+                console.log('This is the edit laboral experience page: ', lexp);
+                setCompanyName(lexp.companyName);
+                setDescription(lexp.description);
+                setPosition(lexp.position);
+                setCompanyWebPage(lexp.companyWebPage);
+                setLocation(lexp.location);
+                setStartDate(lexp.startDate);
+                setEndDate(lexp.endDate);
+                setStillActive(lexp.stillActive);
+            }).catch(error => {
+                console.log('Error getting projects by id', error)
+            });
         }
     }, [setIsEditPage, match]);
 
@@ -83,44 +88,48 @@ export default function FormLaboralExperience() {
             const data  = {
                 companyName,
                 position,
-                description: laboralExperienceDescription,
-                stillActive: stillWorkingHere,
-                startDate,
-                endDate : stillWorkingHere ? '' : endDate,
+                description: description,
+                stillActive: stillActive,
+                startDate: startDate,
+                endDate : stillActive ? '' : endDate,
                 location,
                 companyWebPage
             };
             let lexp; 
-            
             if (isEditPage) {
-                // lexp = await laboralExpService.updateUserProject({"Authorization": session.Authorization}, {id: params.id, ...data});
-                // setProjectName(lexp.name);
-                // setProjectDescription(lexp.description);
-                // setIsFromGithub(lexp.isFromGithub);
-                // setGithubUri(lexp.githubUri);
-                // setNotificationMessage({
-                //     message: `The laboral experience was updated succesfully with date: ${lexp.updatedAt}`,
-                //     severity: 'success'
-                // });
+                lexp = await laboralExpService.updateUserLaboralExp({"Authorization": session.Authorization}, params.id, data);
+                console.log('laboral experience updated', lexp);
+                setLocation(lexp.location);
+                setPosition(lexp.position);
+                setStartDate(lexp.startDate);
+                setEndDate(lexp.endDate);
+                setCompanyName(lexp.companyName);
+                setCompanyWebPage(lexp.companyWebPage);
+                setDescription(lexp.description);
+                setStillActive(lexp.stillActive);
+                setNotificationMessage({
+                    message: `The laboral experience was updated succesfully with date: ${lexp.updatedAt}`,
+                    severity: 'success'
+                });
             } else {
                 console.log('Sending data to backend', data);
-                // lexp = await laboralExpService.postUserLaboralExp({"Authorization": session.Authorization}, data);
-                // setLocation('');
-                // setPosition('');
-                // setStartDate(new Date());
-                // setEndDate(new Date());
-                // setCompanyName('');
-                // setCompanyWebPage('');
-                // setLaboralExperienceDescription('');
-                // setStillWorkingHere(false);
+                lexp = await laboralExpService.postUserLaboralExp({"Authorization": session.Authorization}, data);
+                setLocation('');
+                setPosition('');
+                setStartDate(new Date());
+                setEndDate(new Date());
+                setCompanyName('');
+                setCompanyWebPage('');
+                setDescription('');
+                setStillActive(false);
                 
-                // setNotificationMessage({
-                //     message: `The laboral experience was created succesfully with date: ${lexp.updatedAt}`,
-                //     severity: 'success'
-                // });
+                setNotificationMessage({
+                    message: `The laboral experience was created succesfully with date: ${lexp.updatedAt}`,
+                    severity: 'success'
+                });
             }
         } catch (e) {
-            console.log('Invalid data');
+            console.log('Invalid data', e);
             setNotificationMessage({message:'Invalid data', severity: 'error'});
             setTimeout(() => {
                 setNotificationMessage({message:null});
@@ -177,10 +186,11 @@ export default function FormLaboralExperience() {
                                 <KeyboardDatePicker
                                     disableToolbar
                                     variant="inline"
-                                    format="MM/dd/yyyy"
+                                    format="MM/yyyy"
                                     margin="normal"
                                     id="date-picker-inline"
                                     label="Start date"
+                                    views={["year", "month"]}
                                     required
                                     value={startDate}
                                     onChange={(date) => {
@@ -195,12 +205,13 @@ export default function FormLaboralExperience() {
                                 <KeyboardDatePicker
                                     disableToolbar
                                     variant="inline"
-                                    format="MM/dd/yyyy"
+                                    format="MM/yyyy"
                                     margin="normal"
                                     id="date-picker-inline"
                                     label="End date"
-                                    disabled={stillWorkingHere}
+                                    disabled={stillActive}
                                     value={endDate}
+                                    views={["year", "month"]}
                                     onChange={(date) => {
                                         setEndDate(date);
                                     }}
@@ -214,9 +225,9 @@ export default function FormLaboralExperience() {
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={stillWorkingHere}
+                                        checked={stillActive}
                                         onChange={() => {
-                                            setStillWorkingHere(!stillWorkingHere);
+                                            setStillActive(!stillActive);
                                         }}
                                         name="stillActive"
                                         color="primary"
@@ -228,8 +239,8 @@ export default function FormLaboralExperience() {
                         <Grid item xs={12}>
                             <TextField
                                 name="description"
-                                value={laboralExperienceDescription}
-                                onChange={({target}) => setLaboralExperienceDescription(target.value)}
+                                value={description}
+                                onChange={({target}) => setDescription(target.value)}
                                 id="laboralExperienceDescription"
                                 label="Laboral experience description"
                                 variant="outlined"

@@ -2,27 +2,23 @@ import React, {useContext} from 'react';
 import SubPage from '../../components/SubPage';
 import TableAcademicExperience from './components/TableAcademicExperience';
 import SessionContext from './../../context/SessionContext';
-// import useLaboralExperience from '../../hooks/useLaboralExperience';
+import useAcademicExperience from '../../hooks/useAcademicExperience';
 
 export default function AcademicExperience() {
     const {session} = useContext(SessionContext);
-    // const {loading, laboralExp} = useLaboralExperience({auth: session.Authorization});
+    const {loading, academicExp} = useAcademicExperience({auth: session.Authorization});
     
     return (
         <div className="academicExperiencesContainer">
             <SubPage>
                 <h2>Academic experience page</h2>
-                {/* {loading
+                {loading
                     ? 'Loading ...'
-                    : <TableLaboralExperience
-                        laboralExp={laboralExp}
+                    : <TableAcademicExperience
+                        academicExp={academicExp}
                         session={session}
                     />
-                } */}
-                <TableAcademicExperience
-                    laboralExp={null}
-                    session={session}
-                />
+                }
             </SubPage>
         </div>
     );

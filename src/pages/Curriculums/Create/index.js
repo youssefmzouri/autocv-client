@@ -6,6 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 import CloseIcon from '@material-ui/icons/Close';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import {Link} from 'wouter';
 import cvService from '../../../services/curriculums';
@@ -26,6 +27,15 @@ const useStyles = makeStyles((theme) => ({
     actionButtonsTable:{
         display: 'flex',
         justifyContent: 'flex-end'
+    },
+    headerPage: {
+        display: "flex",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        "& > svg": {
+            cursor: "pointer",
+            margin: "0 10px 0 10px"
+        }
     }
 }));
 
@@ -64,7 +74,12 @@ export default function CreateCurriculum() {
     return (
         <div className="curriculumsCreateContainer">
             <SubPage>
-                <h2>Start creating your curriculum</h2>
+                <div className={classes.headerPage}>
+                    <Link to="/curriculums">
+                        <ArrowBackIcon color="primary" />
+                    </Link>
+                    <h2>Start creating your curriculum</h2>
+                </div>
                 <form className={classes.root} onSubmit={handleCreation} noValidate autoComplete="off">
                     <Grid container>
                         <Grid item xs={12}>

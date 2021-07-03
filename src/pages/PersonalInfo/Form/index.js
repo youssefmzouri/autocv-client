@@ -63,7 +63,6 @@ export default function FormPersonalInfo() {
     const [notificationMessage, setNotificationMessage] = useState({message: null, severity: null});
     const [isEditPage, setIsEditPage] = useState(false);
 
-    // to delete    
     useEffect( () => {
         if (match) {
             // setIsEditPage(true);
