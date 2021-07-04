@@ -7,6 +7,7 @@ import StarIcon from '@material-ui/icons/Star';
 import ShareIcon from '@material-ui/icons/Share';
 import LockIcon from '@material-ui/icons/Lock';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import Button from '@material-ui/core/Button';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -60,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const RepoComponent = ({repositoriy}) => {
+const RepoComponent = ({repositoriy, canBeAdded, handleSelectRepo}) => {
     const classes = useStyles();
     return (
         <div className={classes.repoCard}>
@@ -95,11 +96,23 @@ const RepoComponent = ({repositoriy}) => {
                     }
                 </span>
             </div>
+            {
+                canBeAdded &&
+                    <div>
+                        <Button 
+                            variant="contained"
+                            style={{width: "100%"}}
+                            color="primary"
+                            onClick={() => handleSelectRepo(repositoriy)}>
+                                Add
+                        </Button>
+                    </div>
+            }
         </div>
     )
 }
 
-export default function RepositoriesFromGithub() {
+export default function RepositoriesFromGithub({canBeAdded, handleSelectRepo}) {
     const classes = useStyles();
     const {session} = useContext(SessionContext);
     const {isLoading, githubRepos} = useGithubRepositories({session});
@@ -111,7 +124,12 @@ export default function RepositoriesFromGithub() {
                     "Loading ... "
                     :
                     githubRepos.map(repo => {
-                        return <RepoComponent key={repo.id} repositoriy={repo}/>
+                        return <RepoComponent
+                                    key={repo.id}
+                                    repositoriy={repo}
+                                    canBeAdded={canBeAdded}
+                                    handleSelectRepo={handleSelectRepo}
+                                />
                     })
             }
         </div>

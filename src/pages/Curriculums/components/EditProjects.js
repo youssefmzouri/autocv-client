@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TableRow from '@material-ui/core/TableRow';
@@ -14,13 +14,16 @@ import AddIcon from '@material-ui/icons/Add';
 
 import projectsService from '../../../services/projects';
 import cvService from '../../../services/curriculums';
-import { useEffect } from 'react';
+import SessionContext from '../../../context/SessionContext';
+import useGithubAccessToken from '../../../hooks/useGithubAccessToken';
+import TokenGithubStatus from '../../../pages/Projects/components/TokenGithubStatus';
+import RepositoriesFromGithub from '../../../pages/Projects/components/RepositoriesFromGithub';
 
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
         backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
+        color: theme.palette.common.white
     },
     body: {
         fontSize: 14,
@@ -45,6 +48,22 @@ function ListProjects({rows, handleSelectOne}) {
                 </p>
             })}
         </div>
+    );
+}
+
+
+function ListGithubProjects({handleSelectOne}) {
+    const {session, setSession} = useContext(SessionContext);
+    const {isLoadingToken, tokenGithub} =  useGithubAccessToken({session, setSession});
+    return (
+        <>
+            <TokenGithubStatus isLoading={isLoadingToken} tokenGithub={tokenGithub}/>
+            {
+                tokenGithub && !isLoadingToken ?
+                    <RepositoriesFromGithub canBeAdded={true} handleSelectRepo={handleSelectOne}/>
+                    : null
+            }
+        </>
     );
 }
 
@@ -106,6 +125,28 @@ export default function EditProjects({classes, session, cv, updateCV}) {
             }
         });
     }
+
+    const saveGithubProjectSelected = async (repo) => {
+        const data = {
+            isFromGithub: true,
+            githubUri: repo.html_url,
+            ...repo
+        };
+        const project = await projectsService.postUserProjects({"Authorization": session.Authorization}, data);
+        saveProjectSelected(project.id);
+    }
+
+    const handleAddProjectFromGithub = async () => {
+        setPropsDialog({
+            dialogState: true,
+            title: 'Which one do you want to include in your CV?',
+            bodyText: <ListGithubProjects handleSelectOne={saveGithubProjectSelected}/>,
+            showAcceptButon: false,
+            onCancel: () => {
+                setPropsDialog({dialogState: false});
+            }
+        });
+    }
     
     const onDeleteProject = async (projectID) => {
         let newIdExperiences = cv.projects.map(project => {
@@ -127,7 +168,7 @@ export default function EditProjects({classes, session, cv, updateCV}) {
 
     const transformDate = dateParam => {
         const date = new Date(dateParam);
-        return date.getFullYear();
+        return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()} - ${date.getHours()}:${date.getMinutes()}`;
     };
 
     return (
@@ -139,6 +180,13 @@ export default function EditProjects({classes, session, cv, updateCV}) {
                     startIcon={<AddIcon />}
                     onClick={handleAddProject}>
                     Add Project
+                </Button>
+                <Button variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    startIcon={<AddIcon />}
+                    onClick={handleAddProjectFromGithub}>
+                    Add Project from github 
                 </Button>
             </div>
             <TableContainer component={Paper}>
@@ -161,7 +209,7 @@ export default function EditProjects({classes, session, cv, updateCV}) {
                                             {content.description}
                                         </div>
                                     </StyledTableCell>
-                                    <StyledTableCell align="right">{content.updatedAt}</StyledTableCell>
+                                    <StyledTableCell align="right">{transformDate(content.updatedAt)}</StyledTableCell>
                                     <StyledTableCell className={classes.actionButtonsRow} align="justify">
                                         <DeleteIcon aria-label="Delete Project" color="secondary" fontSize="small" onClick={() => onDeleteProject(id)} />
                                     </StyledTableCell>

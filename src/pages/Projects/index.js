@@ -28,7 +28,7 @@ export default function Projects() {
                 <TokenGithubStatus isLoading={isLoadingToken} tokenGithub={tokenGithub}/>
                 {
                     tokenGithub && !isLoadingToken ?
-                        <RepositoriesFromGithub />
+                        <RepositoriesFromGithub canBeAdded={false} handleSelectRepo={null} />
                        : null
                 }
             </SubPage>
