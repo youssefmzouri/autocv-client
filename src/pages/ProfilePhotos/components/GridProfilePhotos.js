@@ -4,11 +4,10 @@ import { withStyles, makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
-import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-// import AlertDialog from '../../../components/AlertDialog';
-// import laboralExpService from '../../../services/laboralExperience';
-import {Link} from 'wouter';
+import AlertDialog from '../../../components/AlertDialog';
+import profilePhotosService from '../../../services/profilePhotos';
+
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -30,116 +29,148 @@ const useStyles = makeStyles((theme) => ({
 
 const GridProfilePhotos = ({photos, session}) => {
     const classes = useStyles();
-    // const [stateLaboralExp, setStateLaboralExp] = useState([...academicExp]);
+    let [statePhotos, setStatePhotos] = useState([...photos]);
 
     useEffect(() => {
-        // setStateLaboralExp(academicExp);
+        setStatePhotos(photos);
     }, [photos, session]);
 
 
-    // const [propsDialog, setPropsDialog] = useState({
-    //     dialogState: false,
-    //     title: '',
-    //     bodyText: '',
-    //     onAccept: () => {},
-    //     onCancel: () => {}
-    // });
-    // let bodyRows = stateLaboralExp.map((lexp) => {
-    //     return {
-    //         id: lexp.id,
-    //         content: {
-    //             name: lexp.name,
-    //             description: lexp.description,
-    //             numProjects: lexp.projects.length,
-    //             language: lexp.language,
-    //         }
-    //     }
-    // });
-    const onEditRow = (id) => {
-        // console.log('click to edit cv', cv_id);
+    const [propsDialog, setPropsDialog] = useState({
+        dialogState: false,
+        title: '',
+        bodyText: '',
+        onAccept: () => {},
+        onCancel: () => {}
+    });
+    let bodyRows = statePhotos.map((picture) => {
+        return {
+            id: picture.id,
+            content: {
+                ...picture
+            }
+        }
+    });
+
+    const onDeleteImage = (id) => {
+        console.log('Delete image: ', id)
+        setPropsDialog({
+            dialogState: true,
+            title: 'Are you sure?',
+            bodyText: `You are going to delete an image with ID "${id}" completely with this action.`,
+            onAccept: () => {
+                profilePhotosService.deleteUserProfilePhoto({Authorization: session.Authorization}, id)
+                .then(() => {
+                    const new_pics = statePhotos.filter( pic => {
+                        return pic.id !== id
+                    });
+                    setStatePhotos(new_pics);
+                    setPropsDialog({dialogState: false});
+                }).catch(error => {
+                    console.log('Deleted pic ERROR: ', error);
+                    setPropsDialog({dialogState: false});
+                });
+            },
+            onCancel: () => {
+                setPropsDialog({dialogState: false});
+            }
+        });
     }
-    const onDeleteRow = (id, content) => {
-        // setPropsDialog({
-        //     dialogState: true,
-        //     title: 'Are you sure?',
-        //     bodyText: `You are going to delete a laboral experience with name "${content.name}" completely with this action.`,
-        //     onAccept: () => {
-        //         laboralExpService.deleteUserCurriculum({Authorization: session.Authorization}, id)
-        //         .then(() => {
-        //             const new_cvs = stateLaboralExp.filter( cv => {
-        //                 return cv.id !== id
-        //             });
-        //             setStateLaboralExp(new_cvs);
-        //             setPropsDialog({dialogState: false});
-        //         }).catch(error => {
-        //             console.log('Deleted cv ERROR: ', error);
-        //             setPropsDialog({dialogState: false});
-        //         });
-        //     },
-        //     onCancel: () => {
-        //         setPropsDialog({dialogState: false});
-        //     }
-        // });
+
+    const getBase64 = file => {
+        return new Promise(resolve => {
+            // Make new FileReader
+            let reader = new FileReader();
+
+            // Convert the file to base64 text
+            reader.readAsDataURL(file);
+
+            // on reader load somthing...
+            reader.onload = () => {
+                // Make a fileInfo Object
+                resolve(reader.result);
+            };
+        });
+    };
+
+    const handleUpload = (event) => {
+        const image = event.target.files[0];
+        // console.log('Imagen subida: ', image);
+        if (image.type === "image/jpeg") {
+            getBase64(image)
+            .then(async (base64) => {
+                const data = {
+                    ref: image.name,
+                    image: base64
+                };
+                const newPic = await profilePhotosService.postUserProfilePhoto({"Authorization": session.Authorization}, data);
+                setStatePhotos([
+                    ...statePhotos,
+                    newPic
+                ]);
+            })
+            .catch(err => {
+                console.log('Error uploading image: ', err);
+            });
+        } else {
+            // show notification error ... 
+        }
     }
+
+    const Image = ({id, src, alt}) => {
+        const [isHovered, setHover] = useState(false);
+      
+        return (
+          <div
+            style={{
+                position: "relative"
+            }}
+            onMouseOver={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+          >
+            <img src={src} alt={alt} />
+            {isHovered && (
+                <Button
+                    component="label"
+                    color="secondary"
+                    style={{
+                        position: "absolute",
+                        top: "5px",
+                        right: "5px"
+                    }}>
+                    <DeleteIcon aria-label="Delete image" color="secondary" fontSize="large" onClick={() => onDeleteImage(id)} />
+                </Button>
+            )}
+          </div>
+        );
+    };
+
     return (
         <>
             <div className={classes.actionButtonsTable}>
-                <Link to={'/profilePhotos/create'}>
-                    <Button variant="contained"
-                        color="primary"
-                        className={classes.button}
-                        startIcon={<AddPhotoAlternateIcon />}>
-                        Upload new pic
-                    </Button>
-                </Link>
+                <Button variant="contained"
+                    component="label"
+                    color="primary"
+                    className={classes.button}
+                    startIcon={<AddPhotoAlternateIcon />}>
+                    Upload new pic
+                    <input type="file" hidden onChange={handleUpload} />
+                </Button>
             </div>
 
             <div className={classes.gridImages}>
-                {itemData.map((item) => (
-                    <img
-                        src={item.img}
-                        alt={item.title}
+                {bodyRows.map( ({id, content}) => (
+                    <Image
+                        key={id}
+                        id={id}
+                        alt={content.ref}
+                        src={content.image}
                     />
                 ))}
             </div>
-            {/* <AlertDialog {...propsDialog} /> */}
+            <AlertDialog {...propsDialog} />
         </>
     )
 }
-
-const itemData = [
-    {
-        img: 'https://i.pravatar.cc/300?img=1',
-        title: 'Breakfast',
-    },
-    {
-        img: 'https://i.pravatar.cc/300?img=12',
-        title: 'Burger',
-    },
-    {
-        img: 'https://i.pravatar.cc/300?img=3',
-        title: 'Burger',
-    },
-    {
-        img: 'https://i.pravatar.cc/300?img=44',
-        title: 'Burger',
-    },
-    {
-        img: 'https://i.pravatar.cc/300?img=5',
-        title: 'Burger',
-    },
-    {
-        img: 'https://i.pravatar.cc/300?img=55',
-        title: 'Burger',
-    },
-    {
-        img: 'https://i.pravatar.cc/300?img=67',
-        title: 'Burger',
-    },
-    {
-        img: 'https://i.pravatar.cc/300?img=8',
-        title: 'Burger',
-    },
-];
 
 export default GridProfilePhotos;

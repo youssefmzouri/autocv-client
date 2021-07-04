@@ -156,7 +156,7 @@ const TableAcademicExperience = ({academicExp, session}) => {
                             ))
                             :
                             <StyledTableRow key="NoData">
-                                <StyledTableCell align="center" colSpan={5}>No data</StyledTableCell>
+                                <StyledTableCell align="center" colSpan={4}>No data</StyledTableCell>
                             </StyledTableRow>
                         }
                     </TableBody>

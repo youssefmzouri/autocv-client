@@ -11,7 +11,7 @@ import {MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers'
   
 
 import {Link, useRoute } from 'wouter';
-// import laboralExpService from '../../../services/laboralExperience';
+import personalInfoService from '../../../services/personalInfo';
 import Notification from '../../../components/Notification';
 import SessionContext from '../../../context/SessionContext';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -48,12 +48,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FormPersonalInfo() {
     const classes = useStyles();
-    // const [match, params] = useRoute('/projects/edit/:id');
-    const match = false;
+    const [match, params] = useRoute('/personalInfo/edit/:id');
     const {session} = useContext(SessionContext);
     
-    const [emailContact, setEmailContact] = useState('');
-    const [phoneContact, setPhoneContact] = useState('');
+    const [contactEmail, setContactEmail] = useState('');
+    const [contactPhone, setContactPhone] = useState('');
     const [githubUser, setGithubUser] = useState('');
     const [linkedinUser, setLinkedinUser] = useState('');
     const [web, setWeb] = useState('');
@@ -65,68 +64,68 @@ export default function FormPersonalInfo() {
 
     useEffect( () => {
         if (match) {
-            // setIsEditPage(true);
-            // laboralExpService.getUserProject({Authorization: session.Authorization}, params.id)
-            // .then(lexp => {
-            //     console.log('This is the edit project page: ', lexp);
-            //     setCompanyName(lexp.name);
-            //     setLaboralExperienceDescription(lexp.description);
-            //     setStillWorkingHere(lexp.isFromGithub);
-            // }).catch(error => {
-            //     console.log('Error getting projects by id', error)
-            // });
+            setIsEditPage(true);
+            personalInfoService.getOneUserPersonalInfo({Authorization: session.Authorization}, params.id)
+            .then(up => {
+                console.log('This is the edit user profile: ', up);
+                setContactEmail(up.contactEmail);
+                setContactPhone(up.contactPhone);
+                setGithubUser(up.githubUser);
+                setLinkedinUser(up.linkedinUser);
+                setCity(up.city);
+                setWeb(up.web);
+            }).catch(error => {
+                console.log('Error getting personal info (user profile) by id', error);
+            });
         }
     }, [setIsEditPage, match]);
 
     const handleSubmit = async (event) => {
-        // event.preventDefault();
-        // try {
-        //     const data  = {
-        //         companyName,
-        //         position,
-        //         description: laboralExperienceDescription,
-        //         stillActive: stillWorkingHere,
-        //         startDate,
-        //         endDate : stillWorkingHere ? '' : endDate,
-        //         location,
-        //         companyWebPage
-        //     };
-        //     let lexp; 
-            
-        //     if (isEditPage) {
-        //         // lexp = await laboralExpService.updateUserProject({"Authorization": session.Authorization}, {id: params.id, ...data});
-        //         // setProjectName(lexp.name);
-        //         // setProjectDescription(lexp.description);
-        //         // setIsFromGithub(lexp.isFromGithub);
-        //         // setGithubUri(lexp.githubUri);
-        //         // setNotificationMessage({
-        //         //     message: `The laboral experience was updated succesfully with date: ${lexp.updatedAt}`,
-        //         //     severity: 'success'
-        //         // });
-        //     } else {
-        //         console.log('Sending data to backend', data);
-        //         // lexp = await laboralExpService.postUserLaboralExp({"Authorization": session.Authorization}, data);
-        //         // setLocation('');
-        //         // setPosition('');
-        //         // setStartDate(new Date());
-        //         // setEndDate(new Date());
-        //         // setCompanyName('');
-        //         // setCompanyWebPage('');
-        //         // setLaboralExperienceDescription('');
-        //         // setStillWorkingHere(false);
+        event.preventDefault();
+        try {
+            const data  = {
+                contactEmail,
+                contactPhone,
+                githubUser,
+                linkedinUser,
+                web,
+                city,
+            };
+            let up;
+            if (isEditPage) {
+                up = await personalInfoService.updateUserPersonalInfo({"Authorization": session.Authorization}, params.id, data);
+                setContactEmail(up.contactEmail);
+                setContactPhone(up.contactPhone);
+                setGithubUser(up.githubUser);
+                setLinkedinUser(up.linkedinUser);
+                setCity(up.city);
+                setWeb(up.web);
+                setNotificationMessage({
+                    message: `The personal information was updated succesfully with date: ${up.updatedAt}`,
+                    severity: 'success'
+                });
+            } else {
+                console.log('Sending data to backend', data);
+                up = await personalInfoService.postUserPersonalInfo({"Authorization": session.Authorization}, data);
+                setContactEmail('');
+                setContactPhone('');
+                setGithubUser('');
+                setLinkedinUser('');
+                setCity('');
+                setWeb('');
                 
-        //         // setNotificationMessage({
-        //         //     message: `The laboral experience was created succesfully with date: ${lexp.updatedAt}`,
-        //         //     severity: 'success'
-        //         // });
-        //     }
-        // } catch (e) {
-        //     console.log('Invalid data');
-        //     setNotificationMessage({message:'Invalid data', severity: 'error'});
-        //     setTimeout(() => {
-        //         setNotificationMessage({message:null});
-        //     }, 5000);
-        // }
+                setNotificationMessage({
+                    message: `The personal information was created succesfully with date: ${up.updatedAt}`,
+                    severity: 'success'
+                });
+            }
+        } catch (e) {
+            console.log('Invalid data', e);
+            setNotificationMessage({message:'Invalid data', severity: 'error'});
+            setTimeout(() => {
+                setNotificationMessage({message:null});
+            }, 5000);
+        }
     };
     
     return (
@@ -146,9 +145,9 @@ export default function FormPersonalInfo() {
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 name="emailContact"
-                                value={emailContact}
+                                value={contactEmail}
                                 onChange={({target}) => {
-                                    setEmailContact(target.value)}
+                                    setContactEmail(target.value)}
                                 }
                                 id="emailContact"
                                 label="Email Contact"
@@ -161,9 +160,9 @@ export default function FormPersonalInfo() {
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 name="phoneContact"
-                                value={phoneContact}
+                                value={contactPhone}
                                 onChange={({target}) => {
-                                    setPhoneContact(target.value)}
+                                    setContactPhone(target.value)}
                                 }
                                 id="phoneContact"
                                 label="Phone Contact"
