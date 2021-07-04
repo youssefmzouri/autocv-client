@@ -86,6 +86,7 @@ const TableProjects = ({projects, session}) => {
         dialogState: false,
         title: '',
         bodyText: '',
+        showAcceptButon: true,
         onAccept: () => {},
         onCancel: () => {}
     });
@@ -107,6 +108,7 @@ const TableProjects = ({projects, session}) => {
             dialogState: true,
             title: 'Are you sure?',
             bodyText: `You are going to delete a project with name "${project_content.name}" completely with this action.`,
+            showAcceptButon: true,
             onAccept: () => {
                 projectsService.deleteUserProjects({Authorization: session.Authorization}, project_id)
                 .then(() => {

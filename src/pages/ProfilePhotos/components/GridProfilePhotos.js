@@ -40,6 +40,7 @@ const GridProfilePhotos = ({photos, session}) => {
         dialogState: false,
         title: '',
         bodyText: '',
+        showAcceptButon: true,
         onAccept: () => {},
         onCancel: () => {}
     });
@@ -58,6 +59,7 @@ const GridProfilePhotos = ({photos, session}) => {
             dialogState: true,
             title: 'Are you sure?',
             bodyText: `You are going to delete an image with ID "${id}" completely with this action.`,
+            showAcceptButon: true,
             onAccept: () => {
                 profilePhotosService.deleteUserProfilePhoto({Authorization: session.Authorization}, id)
                 .then(() => {

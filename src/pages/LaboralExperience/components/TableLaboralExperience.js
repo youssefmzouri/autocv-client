@@ -75,6 +75,7 @@ const TableLaboralExperience = ({laboralExp, session}) => {
         dialogState: false,
         title: '',
         bodyText: '',
+        showAcceptButon: true,
         onAccept: () => {},
         onCancel: () => {}
     });
@@ -99,6 +100,7 @@ const TableLaboralExperience = ({laboralExp, session}) => {
             dialogState: true,
             title: 'Are you sure?',
             bodyText: `You are going to delete a laboral experience into "${content.companyName}" completely with this action.`,
+            showAcceptButon: true,
             onAccept: () => {
                 console.log('deleting lexp ... ');
                 laboralExpService.deleteUserLaboralExp({Authorization: session.Authorization}, id)

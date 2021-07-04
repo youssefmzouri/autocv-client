@@ -75,6 +75,7 @@ const TableCurriculums = ({curriculums, session}) => {
         dialogState: false,
         title: '',
         bodyText: '',
+        showAcceptButon: true,
         onAccept: () => {},
         onCancel: () => {}
     });
@@ -98,6 +99,7 @@ const TableCurriculums = ({curriculums, session}) => {
             dialogState: true,
             title: 'Are you sure?',
             bodyText: `You are going to delete a CV with name "${cv_content.name}" completely with this action.`,
+            showAcceptButon: true,
             onAccept: () => {
                 cvService.deleteUserCurriculum({Authorization: session.Authorization}, cv_id)
                 .then(() => {

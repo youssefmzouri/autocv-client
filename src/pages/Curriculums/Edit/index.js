@@ -1,13 +1,10 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import SubPage from '../../../components/SubPage';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 
 import Table from '@material-ui/core/Table';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -19,25 +16,29 @@ import TableRow from '@material-ui/core/TableRow';
 import FolderSpecialIcon from '@material-ui/icons/FolderSpecial';
 import SchoolIcon from '@material-ui/icons/School';
 import WorkIcon from '@material-ui/icons/Work';
-
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
-
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import Typography from '@material-ui/core/Typography';
-import SaveIcon from '@material-ui/icons/Save';
-import CloseIcon from '@material-ui/icons/Close';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import Grid from '@material-ui/core/Grid';
+import {Link, useRoute} from 'wouter';
 
-import {Link} from 'wouter';
-import cvService from '../../../services/curriculums';
-import Notification from '../../../components/Notification';
+// components, context and Services
 import SessionContext from '../../../context/SessionContext';
 
+import cvService from '../../../services/curriculums';
 import TableAcademicExperience from '../../AcademicExperience/components/TableAcademicExperience';
+import Notification from '../../../components/Notification';
+import EditPersonalInfo from '../components/EditPersonalInfo';
+import EditProfilePhoto from '../components/EditProfilePhoto';
+import EditAcademicExperience from '../components/EditAcademicExperience';
+import EditLaboralExperience from '../components/EditLaboralExperience';
+import EditProjects from '../components/EditProjects';
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -108,6 +109,11 @@ const useStyles = makeStyles((theme) => ({
             margin: 0
         }
     },
+    headerLeft: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px'
+    },
     button: {
         margin: theme.spacing(1),
         marginRight: 0,
@@ -147,15 +153,24 @@ const useStyles = makeStyles((theme) => ({
         "& > svg": {
             cursor: "pointer"
         }
-    },
+    }
 }));
 
 
 export default function EditCurriculum() {
     const classes = useStyles();
+    const [match, params] = useRoute('/curriculums/edit/:id');
     const [value, setValue] = useState(0);
-
     const {session} = useContext(SessionContext);
+    const [stateCv, setStateCv] = useState({});
+
+    useEffect( () => {
+        cvService.getUserCurriculumPopulated({Authorization: session.Authorization}, params.id)
+        .then( (cv) => {
+            setStateCv(cv);
+            console.log('Curriculum to edit: ', cv)
+        });
+    }, [session.Authorization, params.id]);
 
     const onPreview = () => {
         console.log('on preview triggered');
@@ -172,24 +187,34 @@ export default function EditCurriculum() {
     const onDeleteAcademicExperience = () => {
 
     }
+
+    const transformDate = dateParam => {
+        const date = new Date(dateParam);
+        return parseInt(date.getDate()) +"/"+ parseInt(date.getMonth()+1) +"/"+date.getFullYear()
+    };
     
     return (
         <div className="curriculumsEditContainer">
             <SubPage>
                 <div className={classes.header}>
-                    <div className={classes.headerInfo}>
-                        <h2>Edit CV page</h2>
-                        <small>Created at: 20/06/2021</small>
+                    <div className={classes.headerLeft}>
+                        <Link to="/curriculums">
+                            <ArrowBackIcon style={{cursor: 'pointer'}} color="primary" />
+                        </Link>
+                        <div className={classes.headerInfo}>
+                            <h2>Edit CV page</h2>
+                            <small>Created at: {transformDate(stateCv.createdAt)}</small>
+                        </div>
                     </div>
                     <div className={classes.actionButtonsPage}>
                         <Button variant="contained"
-                            onClick={onPreview()}
+                            onClick={() => onPreview()}
                             color="primary"
                             className={classes.button}>
                             Preview CV
                         </Button>
                         <Button variant="contained"
-                            onClick={onExportPDF()}
+                            onClick={() => onExportPDF()}
                             color="primary"
                             className={classes.button}>
                             Export to PDF
@@ -199,19 +224,7 @@ export default function EditCurriculum() {
                 <div className={classes.body}>
                     <Grid container spacing={4}>
                         <Grid container item xs={12} sm={4} spacing={3}>
-                            <Card className={classes.card}>
-                                <CardContent>
-                                    <Typography variant="h5" component="h2">
-                                        Profile info
-                                    </Typography>
-                                    <Typography variant="body2" align='left' component="p">
-                                        Nothing selected yet ...
-                                    </Typography>
-                                </CardContent>
-                                <CardActions className={classes.actionsCard}>
-                                    <Button variant="contained" color='primary' size="small">Select profile info</Button>
-                                </CardActions>
-                            </Card>
+                            <EditPersonalInfo classes={classes} session={session} cv={stateCv} updateCV={setStateCv}/>
                         </Grid>
                         <Grid container item xs={12} sm={4} spacing={3}>
                             <Card className={classes.card}>
@@ -229,24 +242,7 @@ export default function EditCurriculum() {
                             </Card>
                         </Grid>
                         <Grid container item xs={12} sm={4} spacing={3}>
-                            <Card className={classes.card}>
-                                <CardMedia
-                                    className={classes.media}
-                                    image="/defaultAvatar.jpg"
-                                    title="Default avatar"
-                                />
-                                <CardContent>
-                                    <Typography variant="h5" component="h2">
-                                        Profile photo
-                                    </Typography>
-                                    <Typography variant="body2" align='left' component="p">
-                                        Any photo is selected yet ...
-                                    </Typography>
-                                </CardContent>
-                                <CardActions className={classes.actionsCard}>
-                                    <Button variant="contained" color='primary' size="small">Select picture</Button>
-                                </CardActions>
-                            </Card>
+                            <EditProfilePhoto classes={classes} session={session} cv={stateCv} updateCV={setStateCv}/>
                         </Grid>
                         <Grid container item xs={12}>
                             <AppBar position="static">
@@ -257,44 +253,13 @@ export default function EditCurriculum() {
                                 </Tabs>
                             </AppBar>
                             <TabPanel className={classes.tab} value={value} index={0}>
-                                Item one
+                                <EditProjects classes={classes} session={session} cv={stateCv} updateCV={setStateCv}/>
                             </TabPanel>
                             <TabPanel className={classes.tab} value={value} index={1}>
-                                Item Two
+                                <EditLaboralExperience classes={classes} session={session} cv={stateCv} updateCV={setStateCv}/>
                             </TabPanel>
                             <TabPanel className={classes.tab} value={value} index={2}>
-                                <div className={classes.actionButtonsTable}>
-                                    <Link to={'/academicexperiences/create'}>
-                                        <Button variant="contained"
-                                            color="primary"
-                                            className={classes.button}
-                                            startIcon={<AddIcon />}>
-                                            Add Experience
-                                        </Button>
-                                    </Link>
-                                </div>
-                                <TableContainer component={Paper}>
-                                    <Table className={classes.table} aria-label="customized table">
-                                        <TableHead>
-                                            <TableRow>
-                                                <StyledTableCell align="left">School</StyledTableCell>
-                                                <StyledTableCell align="left">Name Degree</StyledTableCell>
-                                                <StyledTableCell align="right">End year</StyledTableCell>
-                                                <StyledTableCell align="right">Actions</StyledTableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            <StyledTableRow >
-                                                <StyledTableCell align="left">Institut IES Thos i Codina</StyledTableCell>
-                                                <StyledTableCell align="left">Técnico en sistemas micorinformáticos y redes</StyledTableCell>
-                                                <StyledTableCell align="right">2012</StyledTableCell>
-                                                <StyledTableCell className={classes.actionButtonsRow} align="justify">
-                                                    <DeleteIcon aria-label="Delete Experience" color="secondary" fontSize="small" onClick={() => onDeleteAcademicExperience('id', 'content')} />
-                                                </StyledTableCell>
-                                            </StyledTableRow>
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
+                                <EditAcademicExperience classes={classes} session={session} cv={stateCv} updateCV={setStateCv}/>
                             </TabPanel>
                         </Grid>
                     </Grid>

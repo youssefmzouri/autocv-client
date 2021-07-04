@@ -76,6 +76,7 @@ const TablePersonalInfo = ({personalInfo, session}) => {
         dialogState: false,
         title: '',
         bodyText: '',
+        showAcceptButon: true,
         onAccept: () => {},
         onCancel: () => {}
     });
@@ -92,6 +93,7 @@ const TablePersonalInfo = ({personalInfo, session}) => {
             dialogState: true,
             title: 'Are you sure?',
             bodyText: `You are going to delete a personal information with ID "${content.id}" completely with this action.`,
+            showAcceptButon: true,
             onAccept: () => {
                 personalInfoService.deleteUserPersonalInfo({Authorization: session.Authorization}, id)
                 .then(() => {

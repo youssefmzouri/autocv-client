@@ -12,12 +12,42 @@ const getUserCurriculums = async (headers) => {
     }
 }
 
+const getUserCurriculum = async (headers, cv_id) => {
+    try {
+        const response = await axios.get(baseUrl+`/api/curriculums/${cv_id}`, {headers});
+        return response.data;
+    } catch(e) {
+        console.log('Error getting curriculum: ', e);
+        throw e;
+    }
+}
+
+const getUserCurriculumPopulated = async (headers, cv_id) => {
+    try {
+        const response = await axios.get(baseUrl+`/api/curriculums/${cv_id}/populated`, {headers});
+        return response.data;
+    } catch(e) {
+        console.log('Error getting curriculum: ', e);
+        throw e;
+    }
+}
+
 const postUserCurriculums = async (headers, data) => {
     try {
         const response = await axios.post(baseUrl+'/api/curriculums', data, {headers});
         return response.data;
     } catch(e) {
         console.log('Error creating one curriculum: ', e);
+        throw e;
+    }
+}
+
+const updateUserCurriculum = async (headers, id, data) => {
+    try {
+        const response = await axios.put(baseUrl+`/api/curriculums/${id}`, data, {headers});
+        return response.data;
+    } catch(e) {
+        console.log('Error creating one laboral experience: ', e);
         throw e;
     }
 }
@@ -34,7 +64,10 @@ const deleteUserCurriculum = async (headers, cv_id) => {
 
 const toExport = {
     getUserCurriculums,
+    getUserCurriculum,
+    getUserCurriculumPopulated,
     postUserCurriculums,
+    updateUserCurriculum,
     deleteUserCurriculum
 };
 

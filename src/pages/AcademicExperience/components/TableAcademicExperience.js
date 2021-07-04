@@ -84,6 +84,7 @@ const TableAcademicExperience = ({academicExp, session}) => {
         dialogState: false,
         title: '',
         bodyText: '',
+        showAcceptButon: true,
         onAccept: () => {},
         onCancel: () => {}
     });
@@ -94,6 +95,7 @@ const TableAcademicExperience = ({academicExp, session}) => {
             dialogState: true,
             title: 'Are you sure?',
             bodyText: `You are going to delete an academic experience as a "${content.degree}" completely with this action.`,
+            showAcceptButon: true,
             onAccept: () => {
                 academicExpService.deleteUserAcademicExp({Authorization: session.Authorization}, id)
                 .then(() => {

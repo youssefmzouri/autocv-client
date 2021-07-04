@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-export default function AlertDialog({dialogState, title, bodyText, onAccept, onCancel}) {
+export default function AlertDialog({dialogState, title, bodyText, showAcceptButon, onAccept, onCancel}) {
     return (
         <div className="alertDialogContainer">
             <Dialog
@@ -27,9 +27,11 @@ export default function AlertDialog({dialogState, title, bodyText, onAccept, onC
                     <Button onClick={onCancel} color="secondary">
                         Cancel
                     </Button>
-                    <Button onClick={onAccept} color="primary">
-                        Accept
-                    </Button>
+                    {showAcceptButon &&
+                        <Button onClick={onAccept} color="primary">
+                            Accept
+                        </Button>
+                    }
                 </DialogActions>
             </Dialog>
         </div>
