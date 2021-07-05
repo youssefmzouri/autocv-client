@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import { saveAs } from 'file-saver';
 const baseUrl = process.env.REACT_APP_SERVER_URL;
 
 const getUserCurriculums = async (headers) => {
@@ -28,6 +28,17 @@ const getUserCurriculumPopulated = async (headers, cv_id) => {
         return response.data;
     } catch(e) {
         console.log('Error getting curriculum: ', e);
+        throw e;
+    }
+}
+
+const exportCurriculumPDF = async (headers, cv) => {
+    try {
+        const response = await axios.get(baseUrl+`/api/curriculums/${cv.id}/export/pdf`, {headers, responseType: 'blob'});
+        const pdfBlob = new Blob([response.data], {type: 'application/pdf'});
+        saveAs(pdfBlob, `${cv.name}.pdf`);
+    } catch(e) {
+        console.log('Error exporting curriculum: ', e);
         throw e;
     }
 }
@@ -66,6 +77,7 @@ const toExport = {
     getUserCurriculums,
     getUserCurriculum,
     getUserCurriculumPopulated,
+    exportCurriculumPDF,
     postUserCurriculums,
     updateUserCurriculum,
     deleteUserCurriculum

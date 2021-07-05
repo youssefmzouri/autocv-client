@@ -172,26 +172,24 @@ export default function EditCurriculum() {
         });
     }, [session.Authorization, params.id]);
 
-    const onPreview = () => {
-        console.log('on preview triggered');
-    }
+    // const onPreview = () => {
+    //     console.log('on preview triggered');
+    // }
 
-    const onExportPDF = () => {
+    const onExportPDF = async () => {
         console.log('on export triggered');
+        await cvService.exportCurriculumPDF({Authorization: session.Authorization}, stateCv);
     }
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
-    const onDeleteAcademicExperience = () => {
-
-    }
-
     const transformDate = dateParam => {
         const date = new Date(dateParam);
         return parseInt(date.getDate()) +"/"+ parseInt(date.getMonth()+1) +"/"+date.getFullYear()
     };
+    const baseUrl = process.env.REACT_APP_SERVER_URL;
     
     return (
         <div className="curriculumsEditContainer">
@@ -207,12 +205,12 @@ export default function EditCurriculum() {
                         </div>
                     </div>
                     <div className={classes.actionButtonsPage}>
-                        <Button variant="contained"
+                        {/* <Button variant="contained"
                             onClick={() => onPreview()}
                             color="primary"
                             className={classes.button}>
                             Preview CV
-                        </Button>
+                        </Button> */}
                         <Button variant="contained"
                             onClick={() => onExportPDF()}
                             color="primary"
